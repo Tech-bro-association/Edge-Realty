@@ -40,18 +40,19 @@ function addNewUser(req, res, next) {
                 .then((response) => {
                     if (response) {
                         // Add user password to passwordDB
+                        // console.log()
                         savePassword(response._id, data.password)
-                            .then((response) => {
-                                if (response) {
-                                    res.status(200).send({
-                                        message: "User added successfully",
-                                    });
-                                } else {
-                                    res.status(400).send({
-                                        message: "An error occured",
-                                    });
-                                }
+                        .then((response) => {
+                            console.log(response)
+                            res.status(200).send({
+                                message: "User added successfully",
                             });
+                        })
+                        .catch((error) => {
+                            res.status(400).send({
+                                message: "An error occured",
+                            });
+                        });
                     }
                 })
                 .catch((error) => {
