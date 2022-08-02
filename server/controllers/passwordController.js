@@ -1,9 +1,6 @@
 const User = require("../models/userModel").User;
 const Password = require("../models/userModel").Password;
-const hostAddress = "http://localhost:5000";
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
 
 
 
