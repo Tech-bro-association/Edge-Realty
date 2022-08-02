@@ -23,7 +23,7 @@ const userSchema = new Schema(
 );
 
 const passwordSchema = new Schema({
-  user_id: {
+  user_id_fkey: {
     type: String,
   },
   password: {
@@ -32,7 +32,7 @@ const passwordSchema = new Schema({
 });
 
 const tempPasswordSchema = new Schema({
-  user_id: {
+  user_id_fkey: {
     type: String,
   },
   token: {

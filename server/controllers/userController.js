@@ -1,5 +1,7 @@
 const User = require("../models/userModel").User;
 const hostAddress = "http://localhost:5000";
+const resetPasssword = require("../controllers/passwordController").resetPassword;
+const savePassword = require("../controllers/passwordController").savePassword;
 
 
 //  Find user match
@@ -25,6 +27,8 @@ function addNewUser(req, res, next) {
         user_type: data.user_type || "regular",
         address: data.address,
     });
+
+    // Check if user already exists
     findUserMatch(data.email).then((response) => {
         if (response == true) {
             res.status(400).send({
@@ -36,10 +40,18 @@ function addNewUser(req, res, next) {
                 .then((response) => {
                     if (response) {
                         // Add user password to passwordDB
-                        // addPassword(response._id, data.password);
-                        res.status(200).send({
-                            message: "User added successfully",
-                        });
+                        savePassword(response._id, data.password)
+                            .then((response) => {
+                                if (response) {
+                                    res.status(200).send({
+                                        message: "User added successfully",
+                                    });
+                                } else {
+                                    res.status(400).send({
+                                        message: "An error occured",
+                                    });
+                                }
+                            });
                     }
                 })
                 .catch((error) => {
@@ -95,6 +107,25 @@ function updateUserPassword(req, res) {
             });
         });
 }
+
+
+// resetUserPassword
+function resetUserPassword(req, res) {
+    User.findOne({ email: req.body.email, type: "regular" })
+        .then((response) => {
+            if (response) {
+                resetPasssword(response._id);
+            } else {
+                res.status(404).send({
+                    message: "User does not exist",
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+
 
 module.exports = {
     addNewUser,
