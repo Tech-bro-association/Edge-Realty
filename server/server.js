@@ -3,9 +3,9 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
-// const userRoute = require("./routes/userRoutes");
-// const adminRoute = require("./routes/adminRoutes");
-// const agentRoute = require("./routes/agentRoutes");
+const userRoute = require("./routes/userRoute");
+// const adminRoute = require("./routes/adminRoute");
+// const agentRoute = require("./routes/agentRoute");
 const PORT = process.env.PORT || 5000;
 
 // Initialize database
@@ -25,8 +25,8 @@ app.use(
   })
 );
 app.use(morgan("dev"));
-
-// app.use("/user", userRoute);
+app.use(express.json());
+app.use("/user", userRoute);
 // app.use("/agent", agentRoute);
 // app.use("/admin", adminRoute);
 
