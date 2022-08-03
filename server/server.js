@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 // Initialize database
 const uri = "mongodb://localhost:27017/Edge-Realty";
+
 mongoose.connect(uri);
 const db = mongoose.connection;
 

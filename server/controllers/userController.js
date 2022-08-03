@@ -1,8 +1,8 @@
+const mongoose = require("mongoose");
 const User = require("../models/userModel").User;
-const hostAddress = "http://localhost:5000";
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
-
+let db = require('../server').db;
 
 //  Find user match
 function findUserMatch(user_email) {
@@ -17,7 +17,7 @@ function findUserMatch(user_email) {
 }
 
 // Add new user to db
-function addNewUser(req, res, next) {
+async function addNewUser(req, res, next) {
     let data = req.body;
     console.log("--- Request body ---");
     console.log(req.body);
@@ -28,39 +28,35 @@ function addNewUser(req, res, next) {
         address: data.address,
     });
 
+    const session = await db.startSession();
+
     // Check if user already exists
-    findUserMatch(data.email).then((response) => {
+    await findUserMatch(data.email).then((response) => {
         if (response == true) {
             res.status(400).send({
                 message: "User already exists",
             });
         } else {
-            user
-                .save()
-                .then((response) => {
-                    if (response) {
-                        // Add user password to passwordDB
-                        // console.log()
-                        savePassword(response._id, data.password)
-                        .then((response) => {
-                            console.log(response)
-                            res.status(200).send({
-                                message: "User added successfully",
-                            });
-                        })
-                        .catch((error) => {
-                            res.status(400).send({
-                                message: "An error occured",
-                            });
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                    res.status(400).send({
-                        message: "An error occured",
-                    });
-                });
+            session.startTransaction();
+            try {
+                user.save({ session })
+                savePassword(response._id, data.password)
+                    .then((response) => {
+                        console.log(response)
+                        res.status(200).send({ message: "User added successfully" })
+                    })
+                    .catch((error) => {
+                        res.status(400).send({ message: "An error occured" })
+                        throw error;
+                    })
+                session.commitTransaction();
+            } catch (error) {
+                session.abortTransaction();
+                console.log(error)
+                throw error;
+            } finally {
+                session.endSession();
+            }
         }
     });
 };
