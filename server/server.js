@@ -19,6 +19,8 @@ db.once("open", function () {
   console.log(`Connection to ${db.name} database Successful!`);
 });
 
+// console.log(db);
+
 // Express
 app.use(
   cors({
@@ -34,3 +36,5 @@ app.use("/user", userRoute);
 app.listen(PORT, function () {
   console.log(`Server is running on port ${PORT}....`);
 });
+
+// module.exports = { db }

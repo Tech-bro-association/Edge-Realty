@@ -1,8 +1,32 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
-let db = require('../server').db;
+const { MongoClient } = require("mongodb");
+// const client = require('../server').db;
+
+let uri, client, db;
+(async () => {
+    uri = "mongodb://localhost:27017/" + 'replicaSet=rs';
+    client = await MongoClient.connect(uri, { useNewUrlParser: true });
+    db = client.db("Edge-Realty");
+    client.db("Edge-Realty").collection("users").find({}).toArray(function (err, result) {
+        if (err) throw err;
+        console.log(`${result.length} users found`);
+    }
+    );
+
+})()
+
+// mongoose.connect(uri);
+// const client = mongoose.connection;
+
+// client.on("error", console.error.bind(console, "connection error:"));
+// client.once("open", function () {
+//     console.log('--- User controller ---')
+//     console.log(`Connection to ${client.name} database Successful!`);
+// });
+
 
 //  Find user match
 function findUserMatch(user_email) {
@@ -18,6 +42,7 @@ function findUserMatch(user_email) {
 
 // Add new user to db
 async function addNewUser(req, res, next) {
+
     let data = req.body;
     console.log("--- Request body ---");
     console.log(req.body);
@@ -28,7 +53,6 @@ async function addNewUser(req, res, next) {
         address: data.address,
     });
 
-    const session = await db.startSession();
 
     // Check if user already exists
     await findUserMatch(data.email).then((response) => {
@@ -37,26 +61,34 @@ async function addNewUser(req, res, next) {
                 message: "User already exists",
             });
         } else {
-            session.startTransaction();
-            try {
-                user.save({ session })
-                savePassword(response._id, data.password)
-                    .then((response) => {
-                        console.log(response)
-                        res.status(200).send({ message: "User added successfully" })
-                    })
-                    .catch((error) => {
-                        res.status(400).send({ message: "An error occured" })
-                        throw error;
-                    })
-                session.commitTransaction();
-            } catch (error) {
-                session.abortTransaction();
-                console.log(error)
-                throw error;
-            } finally {
-                session.endSession();
-            }
+            (async () => {
+                // console.log(client)
+                const session = await client.startSession();
+
+                session.startTransaction();
+                try {
+                    await user.save({ session })
+                    console.log('--- User saved ---')
+                    await savePassword(response._id, data.password, session)
+                        .then((response) => {
+                            console.log(response)
+                            res.status(200).send({ message: "User added successfully" })
+                        })
+                        .catch((error) => {
+                            res.status(400).send({ message: "An error occured" })
+                            throw error;
+                        })
+                    console.log('--- Password saved ---')
+                    await session.commitTransaction();
+                } catch (error) {
+                    await session.abortTransaction();
+                    console.log(error)
+                    throw error;
+                } finally {
+                    await session.endSession();
+                }
+            })()
+
         }
     });
 };

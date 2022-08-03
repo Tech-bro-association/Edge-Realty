@@ -25,7 +25,7 @@ function resetPasssword(user_id, new_password) {
 
 async function hashPassword(password) {
     let saltRounds = 10
-    await bcrypt.hash(null, saltRounds)
+    await bcrypt.hash(password, saltRounds)
         .then(hash => password = hash)
     return password
 }
@@ -41,7 +41,7 @@ function checkHash(password, hash) {
     });
 }
 
-function savePassword(user_id, user_password) {
+function savePassword(user_id, user_password, session) {
     return new Promise((resolve, reject) => {
         hashPassword(user_password).then(hash => {
             let new_password = new Password({
