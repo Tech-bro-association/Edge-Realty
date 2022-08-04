@@ -64,7 +64,6 @@ function addNewUser(req, res, next) {
                 try {
                     let temp_id;
                     await user.save()
-                    console.log('--- User saved ---')
                     await savePassword(response._id, data.password)
                         .then((response) => {
                             temp_id = response._id
@@ -75,7 +74,7 @@ function addNewUser(req, res, next) {
                             res.status(400).send({ message: "An error occured" })
                             throw error;
                         })
-                    console.log('>>> Password Saved')
+                    console.log('[OK] - Password Saved')
                 } catch (error) {
                     user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
                     console.log(error)
@@ -90,7 +89,7 @@ function updateUserData(req, res) {
     User.findOneAndUpdate({ _id: req.body._id }, req.body)
         .then((response) => {
             if (response) {
-                console.log("User updated successfully");
+                console.log("[OK] - User updated successfully");
                 res.status(200).send({
                     message: "User data updated successfully",
                 });
