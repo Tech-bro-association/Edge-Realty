@@ -41,14 +41,14 @@ function checkHash(password, hash) {
     });
 }
 
-function savePassword(user_id, user_password, session) {
+function savePassword(user_id, user_password) {
     return new Promise((resolve, reject) => {
         hashPassword(user_password).then(hash => {
             let new_password = new Password({
                 user_id_fkey: user_id,
                 password: hash,
             });
-            new_password.save({ session }).then(response => {
+            new_password.save().then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error);

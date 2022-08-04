@@ -41,8 +41,7 @@ function findUserMatch(user_email) {
 }
 
 // Add new user to db
-async function addNewUser(req, res, next) {
-
+function addNewUser(req, res, next) {
     let data = req.body;
     console.log("--- Request body ---");
     console.log(req.body);
@@ -53,10 +52,9 @@ async function addNewUser(req, res, next) {
         address: data.address,
     });
 
-
     // Check if user already exists
-    await findUserMatch(data.email).then((response) => {
-        if (response == true) {
+    findUserMatch(data.email).then((response) => {
+        if (response) {
             res.status(400).send({
                 message: "User already exists",
             });
@@ -65,9 +63,9 @@ async function addNewUser(req, res, next) {
             (async () => {
                 try {
                     let temp_id;
-                    await user.save({ session })
+                    await user.save()
                     console.log('--- User saved ---')
-                    await savePassword(response._id, data.password, session)
+                    await savePassword(response._id, data.password)
                         .then((response) => {
                             temp_id = response._id
                             console.log(response)
@@ -77,16 +75,14 @@ async function addNewUser(req, res, next) {
                             res.status(400).send({ message: "An error occured" })
                             throw error;
                         })
-                    console.log('--- Password saved ---')
+                    console.log('>>> Password Saved')
                 } catch (error) {
                     user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
                     console.log(error)
-
                 }
             })()
-
         }
-    });
+    }).catch(error => console.log(error));
 };
 
 // Update user data
