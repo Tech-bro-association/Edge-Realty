@@ -5,18 +5,18 @@ const savePassword = require("../controllers/passwordController").savePassword;
 const { MongoClient } = require("mongodb");
 // const client = require('../server').db;
 
-let uri, client, db;
-(async () => {
-    uri = "mongodb://localhost:27017/" + 'replicaSet=rs';
-    client = await MongoClient.connect(uri, { useNewUrlParser: true });
-    db = client.db("Edge-Realty");
-    client.db("Edge-Realty").collection("users").find({}).toArray(function (err, result) {
-        if (err) throw err;
-        console.log(`${result.length} users found`);
-    }
-    );
+// let uri, client, db;
+// (async () => {
+//     uri = "mongodb://localhost:27017/" + 'replicaSet=rs';
+//     client = await MongoClient.connect(uri, { useNewUrlParser: true });
+//     db = client.db("Edge-Realty");
+//     client.db("Edge-Realty").collection("users").find({}).toArray(function (err, result) {
+//         if (err) throw err;
+//         console.log(`${result.length} users found`);
+//     }
+//     );
 
-})()
+// })()
 
 // mongoose.connect(uri);
 // const client = mongoose.connection;
@@ -61,16 +61,15 @@ async function addNewUser(req, res, next) {
                 message: "User already exists",
             });
         } else {
+            // Try using Transactions here
             (async () => {
-                // console.log(client)
-                const session = await client.startSession();
-
-                session.startTransaction();
                 try {
+                    let temp_id;
                     await user.save({ session })
                     console.log('--- User saved ---')
                     await savePassword(response._id, data.password, session)
                         .then((response) => {
+                            temp_id = response._id
                             console.log(response)
                             res.status(200).send({ message: "User added successfully" })
                         })
@@ -79,13 +78,10 @@ async function addNewUser(req, res, next) {
                             throw error;
                         })
                     console.log('--- Password saved ---')
-                    await session.commitTransaction();
                 } catch (error) {
-                    await session.abortTransaction();
+                    user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
                     console.log(error)
-                    throw error;
-                } finally {
-                    await session.endSession();
+
                 }
             })()
 
