@@ -27,6 +27,23 @@ const { MongoClient } = require("mongodb");
 //     console.log(`Connection to ${client.name} database Successful!`);
 // });
 
+function loginUser(req, res) {
+    User.findOne({ email: req.body.email })
+        .then((response) => {
+            passwordCheck(response._id, req.body.password)
+                .then(response => {
+                    if (response) {
+                        res.status(200).send({
+                            message: "User logged in successfully",
+                        });
+                    } else {
+                        res.status(404).send({
+                            message: "User does not exist",
+                        });
+                    }
+                })
+        })
+}
 
 //  Find user match
 function findUserMatch(user_email) {
@@ -128,7 +145,6 @@ function updateUserPassword(req, res) {
         });
 }
 
-
 // resetUserPassword
 function resetUserPassword(req, res) {
     User.findOne({ email: req.body.email, type: "regular" })
@@ -151,4 +167,5 @@ module.exports = {
     addNewUser,
     updateUserData,
     updateUserPassword,
+    loginUser,
 };

@@ -61,7 +61,30 @@ function savePassword(user_id, user_password) {
     }); // Promise
 }
 
+function checkPassword(user_id, user_password) {
+    return new Promise((resolve, reject) => {
+        Password.findOne({ user_id_fkey: user_id })
+            .then(response => {
+                if (response) {
+                    checkHash(user_password, response.password)
+                        .then(response => {
+                            if (response) {
+                                resolve(true);
+                            }
+                            else {
+                                resolve(false);
+                            }
+                        }
+                        ).catch(error => {
+                            reject(error);
+                        })
+                }
+            })
+    })
+}
+
 module.exports = {
     resetPasssword,
-    savePassword
+    savePassword,
+    checkPassword,
 }
