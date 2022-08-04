@@ -2,6 +2,7 @@
 const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
+const checkPassword = require("../controllers/passwordController").checkPassword;
 const { MongoClient } = require("mongodb");
 // const client = require('../server').db;
 
@@ -28,10 +29,12 @@ const { MongoClient } = require("mongodb");
 // });
 
 function loginUser(req, res) {
+    console.log('--- Login User ---')
     User.findOne({ email: req.body.email })
         .then((response) => {
-            passwordCheck(response._id, req.body.password)
+            checkPassword(response._id, req.body.password)
                 .then(response => {
+                    console.log(response)
                     if (response) {
                         res.status(200).send({
                             message: "User logged in successfully",
@@ -77,14 +80,13 @@ function addNewUser(req, res, next) {
             });
         } else {
             // Try using Transactions here
-            (async () => {
-                try {
-                    let temp_id;
-                    await user.save()
-                    await savePassword(response._id, data.password)
+            try {
+                let temp_id;
+                user.save().then((response) => {
+                    savePassword(response._id, data.password)
                         .then((response) => {
-                            temp_id = response._id
                             console.log(response)
+                            temp_id = response._id
                             res.status(200).send({ message: "User added successfully" })
                         })
                         .catch((error) => {
@@ -92,11 +94,11 @@ function addNewUser(req, res, next) {
                             throw error;
                         })
                     console.log('[OK] - Password Saved')
-                } catch (error) {
-                    user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
-                    console.log(error)
-                }
-            })()
+                })
+            } catch (error) {
+                user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
+                console.log(error)
+            }
         }
     }).catch(error => console.log(error));
 };

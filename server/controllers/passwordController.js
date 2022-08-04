@@ -30,14 +30,14 @@ async function hashPassword(password) {
     return password
 }
 
-function checkHash(password, hash) {
-    return bcrypt.compare(password, hash, function (err, res) {
+async function checkHash(password, hash) {
+    await bcrypt.compare(password, hash, function (err, res) {
         if (err) {
             console.log(err)
         } else {
             console.log(res)
         }
-        return res  // True of False
+        return res
     });
 }
 
@@ -49,6 +49,7 @@ function savePassword(user_id, user_password) {
                 password: hash,
             });
             new_password.save().then(response => {
+                console.log(response)
                 resolve(response);
             }).catch(error => {
                 reject(error);
@@ -61,25 +62,19 @@ function savePassword(user_id, user_password) {
     }); // Promise
 }
 
-function checkPassword(user_id, user_password) {
+async function checkPassword(user_id, user_password) {
+    console.log(user_id, user_password)
     return new Promise((resolve, reject) => {
         Password.findOne({ user_id_fkey: user_id })
             .then(response => {
+                console.log(response)
                 if (response) {
-                    checkHash(user_password, response.password)
-                        .then(response => {
-                            if (response) {
-                                resolve(true);
-                            }
-                            else {
-                                resolve(false);
-                            }
-                        }
-                        ).catch(error => {
-                            reject(error);
-                        })
+                    res = checkHash(user_password, response.password)
+                    resolve(res)
                 }
-            })
+            }).catch(error => {
+                reject(error);
+            });
     })
 }
 
