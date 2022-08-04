@@ -1,4 +1,4 @@
 server/node_modules
 server/data
 server/mongodb-win32-x86_64-2008plus-ssl-4.0.0.zip
-server/mongodb-win32-x86_64-2008plus-ssl-4.0.0/
+server/mongodb-win32-x86_64-2008plus-ssl-4.0.0
