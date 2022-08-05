@@ -39,7 +39,8 @@ function loginUser(req, res) {
                         res.status(200).send({
                             message: "User logged in successfully",
                         });
-                    } else {
+                    } if (response == false) {
+                        // console.log('invalid password')
                         res.status(404).send({
                             message: "User does not exist",
                         });
