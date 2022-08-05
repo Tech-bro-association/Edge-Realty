@@ -159,7 +159,7 @@ function updateUserPassword(req, res) {
 }
 
 // resetUserPassword
-function resetUserPassword(req, res) {
+async function resetUserPassword(req, res) {
     User.findOne({ email: req.body.email, type: "regular" })
         .then((response) => {
             if (response) {
