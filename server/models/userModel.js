@@ -22,7 +22,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const userPasswordSchema = new Schema({
+const passwordSchema = new Schema({
   user_id_fkey: {
     type: String,
   },
@@ -31,7 +31,7 @@ const userPasswordSchema = new Schema({
   },
 });
 
-const userTempPasswordSchema = new Schema({
+const tempPasswordSchema = new Schema({
   user_id_fkey: {
     type: String,
   },
@@ -46,7 +46,7 @@ const userTempPasswordSchema = new Schema({
 });
 
 const User = mongoose.model("Users", userSchema);
-const UserPassword = mongoose.model("Passwords", userPasswordSchema);
-const UserTempPassword = mongoose.model("TempPasswords", userTempPasswordSchema);
+const Password = mongoose.model("Passwords", passwordSchema);
+const TempPassword = mongoose.model("TempPasswords", tempPasswordSchema);
 
-module.exports = { User, UserPassword, UserTempPassword };
+module.exports = { User, Password, TempPassword };

@@ -163,7 +163,14 @@ function resetUserPassword(req, res) {
     User.findOne({ email: req.body.email, type: "regular" })
         .then((response) => {
             if (response) {
-                resetPasssword(response._id);
+                resetPasssword(response._id).then((response) => {
+                    console.log(response)
+                    res.status(200).send({ message: "Temporary reset token sent to user email" })
+                }, (error) => {
+                    console.log(error)
+                    res.status(401).send({ message: "User account does not exist" })
+                });
+
             } else {
                 res.status(404).send({
                     message: "User does not exist",
@@ -181,4 +188,5 @@ module.exports = {
     updateUserData,
     updateUserPassword,
     loginUser,
+    resetUserPassword
 };
