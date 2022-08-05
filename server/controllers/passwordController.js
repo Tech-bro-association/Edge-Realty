@@ -18,13 +18,13 @@ function resetPassword(user_id) {
                             /* null response - Add new id and token to temppassword collection
                                     response - Update user token in temmPassword collection */
                             if (response) {
-                                updateOrCreateTempPassword(user_id, token, true);
+                                updateOrCreateTempPassword(user_id, token, true).then(resolve({ status: "OK" }));
                                 /* true -> Update, false -> Create */
                             } else {
-                                updateOrCreateTempPassword(user_id, token, false);
+                                updateOrCreateTempPassword(user_id, token, false).then(resolve({ status: "OK" }));
                             }
                             mailTemporaryDetails(user_email, token);
-                            resolve(response)
+
                         })
                         .catch((error) => {
                             console.log(error)
@@ -40,14 +40,14 @@ function resetPassword(user_id) {
 
 }
 
-function updateOrCreateTempPassword(user_id, token, update) {
+async function updateOrCreateTempPassword(user_id, token, update) {
     if (update == true) {
-        TempPassword.findOneAndUpdate(user_id, {
+        await TempPassword.findOneAndUpdate(user_id, {
             token: token
         }).then((response) => {
             console.log(response);
         });
-        TempPassword.findOne(user_id).then((response) => {
+        await TempPassword.findOne(user_id).then((response) => {
             console.log(response);
         });
     } else {
@@ -55,11 +55,11 @@ function updateOrCreateTempPassword(user_id, token, update) {
             user_id_fkey: user_id,
             token: token
         });
-        userNewTempPassword.save().then((response) => {
+        await userNewTempPassword.save().then((response) => {
             console.log(response);
-            console.log('')
         }, (error) => { console.log(error) }).catch(error => console.log(error));
     }
+
 };
 
 function mailTemporaryDetails(user_email, token) {
@@ -108,33 +108,22 @@ function confirmResetToken(req, res, next) {
     let user_email = req.body.email;
     let token = req.body.token;
 
-    User.findOne({ user_type: "regular", email: user_email }) // Find user with email
+    User.findOne({ user_type: "regular", email: user_email })
         .then((response) => {
             console.log(response);
-            // If user is found in User collection
             if (response) {
-                TempPassword.findOne({ user_id_fkey: response._id, token: token }) // Find user with userId and token in TempPassword collection
+                TempPassword.findOne({ user_id_fkey: response._id, token: token })
                     .then((response) => {
                         if (response) {
-                            res.status(200).send({
-                                match: true,
-                            });
+                            res.status(200).send({ match: true });
                         } else {
-                            res.status(400).send({
-                                match: false,
-                            });
-                        }
+                            res.status(400).send({ match: false })
+                        };
                     })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            } else {
-                res.status(401).send({ message: "User does not exists" });
-            }
+                    .catch((error) => { console.log(error) });
+            } else { res.status(401).send({ message: "User does not exists" }) };
         })
-        .catch((error) => {
-            console.log(error);
-        });
+        .catch((error) => { console.log(error) });
 };
 
 async function hashPassword(password) {

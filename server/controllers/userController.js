@@ -164,8 +164,11 @@ function resetUserPassword(req, res) {
         .then((response) => {
             if (response) {
                 resetPasssword(response._id).then((response) => {
-                    console.log(response)
-                    res.status(200).send({ message: "Temporary reset token sent to user email" })
+                    if (response) {
+                        console.log('[OK] - ' + response)
+                        res.status(200).send({ message: "Temporary reset token sent to user email" })
+                    }
+
                 }, (error) => {
                     console.log(error)
                     res.status(401).send({ message: "User account does not exist" })
