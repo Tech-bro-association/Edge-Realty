@@ -41,7 +41,7 @@ submit_button.addEventListener('click', () => {
                 window.alert('Successful ')
 
                 setTimeout(() => {
-                    location.href = 'property-grid.html'
+                    location.href = 'login-register.html'
                 }, 1000)()
             }, (error) => {
                 window.alert('Invalid Credentials')
@@ -64,8 +64,8 @@ let login_button = document.getElementById('login-button'),
 
 login_button.addEventListener('click', () => {
     let login_data = {
-        "email": login_email,
-        "password": login_password
+        "email": login_email.value,
+        "password": login_password.value
     }
     axios.post(url + '/user/login', login_data)
         .then(response => {

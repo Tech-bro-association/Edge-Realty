@@ -24,7 +24,7 @@ const userSchema = new Schema(
 
 const passwordSchema = new Schema({
   user_id_fkey: {
-    // type: String,
+    type: String,
   },
   password: {
     type: String,

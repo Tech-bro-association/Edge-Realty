@@ -3,8 +3,6 @@ const Password = require("../models/userModel").Password;
 const bcrypt = require('bcrypt');
 
 
-
-
 function resetPasssword(user_id, new_password) {
     User.findOne(user_id).then(response => {
         if (response) {
@@ -61,6 +59,7 @@ function checkPassword(user_id, user_password) {
     return new Promise((resolve, reject) => {
         Password.findOne({ user_id_fkey: user_id })
             .then(response => {
+                console.log('password.findone')
                 console.log(response)
                 if (response) {
                     (async () => {

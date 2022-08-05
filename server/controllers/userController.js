@@ -30,22 +30,32 @@ const { MongoClient } = require("mongodb");
 
 function loginUser(req, res) {
     console.log('--- Login User ---')
+    console.log(req.body)
     User.findOne({ email: req.body.email })
         .then((response) => {
-            checkPassword(response._id, req.body.password)
-                .then(response => {
-                    console.log(response)
-                    if (response) {
-                        res.status(200).send({
-                            message: "User logged in successfully",
-                        });
-                    } if (response == false) {
-                        // console.log('invalid password')
-                        res.status(404).send({
-                            message: "User does not exist",
-                        });
-                    }
-                })
+            console.log(response)
+            try {
+                checkPassword(response._id, req.body.password)
+                    .then(response => {
+                        console.log(response)
+                        if (response) {
+                            res.status(200).send({
+                                message: "User logged in successfully",
+                            });
+                        } if (response == false) {
+                            // console.log('invalid password')
+                            res.status(404).send({
+                                message: "User does not exist",
+                            });
+                        }
+                    })
+            } catch (error) {
+                console.log("[Error] - " + error.message)
+                res.status(400).send({
+                    message: "User does not exist",
+                });
+            }
+
         })
 }
 
