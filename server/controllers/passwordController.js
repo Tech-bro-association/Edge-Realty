@@ -103,7 +103,8 @@ function mailTemporaryDetails(user_email, token) {
 
 /*  Accepts user_email and token,    
     returns true or false if match in database */
-function confirmResetToken(req, res, next) {
+async function confirmResetToken(req, res, next) {
+    // Check temporary password
     console.log(req.body);
     let user_email = req.body.email;
     let token = req.body.token;
