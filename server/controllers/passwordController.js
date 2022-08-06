@@ -1,9 +1,10 @@
 // const User = require("../models/userModel").User;
-const { User, Password, TempPassword } = require("../models/userModel");
-const bcrypt = require('bcrypt');
-const randomToken = require("random-token");
-const { transporter, mailOptions } = require("../services/emailService.js");
-const htmlHostAddress = "http://localhost:8080";
+const { User } = require("../models/userModel"),
+    { Password, TempPassword } = require("../models/passwordModel"),
+    { transporter, mailOptions } = require("../services/emailService.js"),
+    bcrypt = require('bcrypt'),
+    randomToken = require("random-token"),
+    htmlHostAddress = "http://localhost:8080";
 
 
 function resetPassword(user_id) {
@@ -103,28 +104,50 @@ function mailTemporaryDetails(user_email, token) {
 
 /*  Accepts user_email and token,    
     returns true or false if match in database */
-async function confirmResetToken(req, res, next) {
+function confirmResetToken(req, res, next) {
     // Check temporary password
     console.log(req.body);
-    let user_email = req.body.email;
-    let token = req.body.token;
+    let user_email = req.body.email,
+        token = req.body.token,
+        new_password = req.body.new_password
 
-    User.findOne({ user_type: "regular", email: user_email })
+    let result = User.findOne({ user_type: "regular", email: user_email })
         .then((response) => {
             console.log(response);
             if (response) {
-                TempPassword.findOne({ user_id_fkey: response._id, token: token })
+                let user_id = response._id;
+                TempPassword.findOne({ user_id_fkey: user_id, token: token })
                     .then((response) => {
                         if (response) {
-                            res.status(200).send({ match: true });
+                            return true
+                            // res.status(200).send({ match: true });
                         } else {
-                            res.status(400).send({ match: false })
+                            return false
+                            // res.status(400).send({ match: false })
                         };
                     })
                     .catch((error) => { console.log(error) });
             } else { res.status(401).send({ message: "User does not exists" }) };
         })
         .catch((error) => { console.log(error) });
+
+    if (result) {
+        savePassword(user_id, new_password).then((response) => {
+            if (response) {
+                TempPassword.findOneAndDelete({ user_id_fkey: user_id })
+                    .then((response) => {
+                        if (response) { res.status(200).send({ message: "Password updated" }); }
+                        else { res.status(500).send({ message: "An error occured" }) }
+                    })
+            }
+        }, (error) => {
+            console.log(error)
+            res.status(500).send({ message: "An error occured" })
+        })
+    } else {
+        res.status(400).send({ message: "User details does not exist" })
+    }
+
 };
 
 async function hashPassword(password) {

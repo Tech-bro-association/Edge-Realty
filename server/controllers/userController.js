@@ -142,9 +142,9 @@ function updateUserPassword(req, res) {
     User.findOne({ email: req.body.email })
         .then((response) => {
             if (response) {
-                let userId = response._id;
+                let user_id = response._id;
                 // Update password in passwordDB
-                // updatePassword(userId, req.body.password);
+                savePassword(user_id, req.body.password);
             } else {
                 res.status(404).send({
                     message: "User does not exist",

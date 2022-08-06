@@ -22,31 +22,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-const passwordSchema = new Schema({
-  user_id_fkey: {
-    type: String,
-  },
-  password: {
-    type: String,
-  },
-});
-
-const tempPasswordSchema = new Schema({
-  user_id_fkey: {
-    type: String,
-  },
-  token: {
-    type: String,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    expires: 120,
-  },
-});
-
 const User = mongoose.model("Users", userSchema);
-const Password = mongoose.model("Passwords", passwordSchema);
-const TempPassword = mongoose.model("TempPasswords", tempPasswordSchema);
 
-module.exports = { User, Password, TempPassword };
+module.exports = { User };
