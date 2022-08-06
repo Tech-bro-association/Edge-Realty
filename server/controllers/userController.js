@@ -1,32 +1,9 @@
-// const mongoose = require("mongoose");
 const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
 const checkPassword = require("../controllers/passwordController").checkPassword;
-const { MongoClient } = require("mongodb");
-// const client = require('../server').db;
 
-// let uri, client, db;
-// (async () => {
-//     uri = "mongodb://localhost:27017/" + 'replicaSet=rs';
-//     client = await MongoClient.connect(uri, { useNewUrlParser: true });
-//     db = client.db("Edge-Realty");
-//     client.db("Edge-Realty").collection("users").find({}).toArray(function (err, result) {
-//         if (err) throw err;
-//         console.log(`${result.length} users found`);
-//     }
-//     );
 
-// })()
-
-// mongoose.connect(uri);
-// const client = mongoose.connection;
-
-// client.on("error", console.error.bind(console, "connection error:"));
-// client.once("open", function () {
-//     console.log('--- User controller ---')
-//     console.log(`Connection to ${client.name} database Successful!`);
-// });
 
 function loginUser(req, res) {
     console.log('--- Login User ---')
@@ -184,6 +161,19 @@ async function resetUserPassword(req, res) {
             console.log(error)
         })
 }
+
+function addPropertyToCart (req, res) {}
+
+function completePayment (req, res) {}
+
+function showTransactionHistory (req, res) {}
+
+function bookAppointment (req, res) {}
+
+function signupForNewsletter (req, res) {}
+
+function reportAgent (req, res) {}
+
 
 
 module.exports = {

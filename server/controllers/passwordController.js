@@ -109,45 +109,40 @@ function confirmResetToken(req, res, next) {
     console.log(req.body);
     let user_email = req.body.email,
         token = req.body.token,
-        new_password = req.body.new_password
+        new_password = req.body.new_password,
+        user_id;
 
-    let result = User.findOne({ user_type: "regular", email: user_email })
+    User.findOne({ user_type: "regular", email: user_email })
         .then((response) => {
-            console.log(response);
-            if (response) {
-                let user_id = response._id;
-                TempPassword.findOne({ user_id_fkey: user_id, token: token })
-                    .then((response) => {
-                        if (response) {
-                            return true
-                            // res.status(200).send({ match: true });
-                        } else {
-                            return false
-                            // res.status(400).send({ match: false })
-                        };
-                    })
-                    .catch((error) => { console.log(error) });
-            } else { res.status(401).send({ message: "User does not exists" }) };
-        })
-        .catch((error) => { console.log(error) });
+            return new Promise((resolve, reject) => {
 
-    if (result) {
-        savePassword(user_id, new_password).then((response) => {
-            if (response) {
-                TempPassword.findOneAndDelete({ user_id_fkey: user_id })
-                    .then((response) => {
-                        if (response) { res.status(200).send({ message: "Password updated" }); }
-                        else { res.status(500).send({ message: "An error occured" }) }
-                    })
-            }
-        }, (error) => {
-            console.log(error)
-            res.status(500).send({ message: "An error occured" })
+                if (response) {
+                    user_id = response._id;
+                    TempPassword.findOne({ user_id_fkey: user_id, token: token })
+                        .then((response) => { if (response) { resolve(true) } else { resolve(false) } })
+                        .catch((error) => {
+                            console.log(error)
+                            reject(error)
+                        });
+                } else { res.status(401).send({ message: "User does not exists" }) };
+            })
         })
-    } else {
-        res.status(400).send({ message: "User details does not exist" })
-    }
-
+        .then((response) => {
+            if (response == true) {
+                changeOldPassword(user_id, new_password).then((response) => {
+                    if (response) {
+                        TempPassword.findOneAndDelete({ user_id_fkey: user_id })
+                            .then((response) => {
+                                if (response) { res.status(200).send({ message: "Password updated" }); }
+                                else { res.status(404).send({ message: "Token does not exist" }) }
+                            }).catch((error) => {
+                                console.log(error)
+                                res.status(500).send({ message: "An error occured" })
+                            });
+                    }
+                })
+            } else { res.status(400).send({ message: "User details does not exist" }) }
+        })
 };
 
 async function hashPassword(password) {
@@ -183,13 +178,23 @@ function savePassword(user_id, user_password) {
     }); // Promise
 }
 
+function changeOldPassword(user_id, new_password) {
+    return new Promise((resolve, reject) => {
+        hashPassword(new_password).then(hash => {
+            Password.findOneAndUpdate({ user_id_fkey: user_id }, { user_id_fkey: user_id, password: hash }, { returnOriginal: false })
+                .then((response) => {
+                    console.log(response)
+                    resolve(response)
+                }).catch(error => { reject(error) })
+        }).catch(error => { reject(error) })
+    })
+}
+
 function checkPassword(user_id, user_password) {
     /* Resolves true or false if password matches saved hash value */
     return new Promise((resolve, reject) => {
         Password.findOne({ user_id_fkey: user_id })
             .then(response => {
-                console.log('password.findone')
-                console.log(response)
                 if (response) {
                     (async () => {
                         let result = await checkHash(user_password, response.password)
