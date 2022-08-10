@@ -1,39 +1,13 @@
 const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
-const checkPassword = require("../controllers/passwordController").checkPassword;
-const { addNewClient, findClientMatch } = require("./commonController")
+const { addNewClient, findClientMatch, updateClientData, authenticateClientLogin } = require("./commonController")
 
 
 function loginUser(req, res) {
     console.log('--- Login User ---')
     console.log(req.body)
-    User.findOne({ email: req.body.email })
-        .then((response) => {
-            console.log(response)
-            try {
-                checkPassword(response._id, req.body.password)
-                    .then(response => {
-                        console.log(response)
-                        if (response) {
-                            res.status(200).send({
-                                message: "User logged in successfully",
-                            });
-                        } if (response == false) {
-                            // console.log('invalid password')
-                            res.status(404).send({
-                                message: "User does not exist",
-                            });
-                        }
-                    })
-            } catch (error) {
-                console.log("[Error] - " + error.message)
-                res.status(400).send({
-                    message: "User does not exist",
-                });
-            }
-
-        })
+    authenticateClientLogin(res, "user", req.body)
 }
 
 //  Find user match
@@ -60,59 +34,28 @@ function addNewUser(req, res, next) {
         address: data.address,
     });
 
-    addNewClient(res, "user", user, data)
-    // Check if user already exists
-    // findUserMatch(data.email).then((response) => {
-    //     if (response) {
-    //         res.status(400).send({
-    //             message: "User already exists",
-    //         });
-    //     } else {
-    //         // Try using Transactions here
-    //         try {
-    //             let temp_id;
-    //             user.save().then((response) => {
-    //                 savePassword(response._id, data.password)
-    //                     .then((response) => {
-    //                         console.log(response)
-    //                         temp_id = response._id
-    //                         res.status(200).send({ message: "User added successfully" })
-    //                     })
-    //                     .catch((error) => {
-    //                         res.status(400).send({ message: "An error occured" })
-    //                         throw error;
-    //                     })
-    //                 console.log('[OK] - Password Saved')
-    //             })
-    //         } catch (error) {
-    //             user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
-    //             console.log(error)
-    //         }
-    //     }
-    // }).catch(error => console.log(error));
+    addNewClient(res, "user", data, user)
 };
+
+function findUser(req, res) {
+    try {
+        User.findOne({ _id: req.body._id })
+            .then((response) => {
+                if (response) {
+                    console.log(response)
+                    res.status(200).send({ message: "User found" })
+                } else {
+                    res.status(404).send({ message: "User not found" })
+                }
+            })
+    } catch (error) {
+
+    }
+}
 
 // Update user data
 function updateUserData(req, res) {
-    User.findOneAndUpdate({ _id: req.body._id }, req.body)
-        .then((response) => {
-            if (response) {
-                console.log("[OK] - User updated successfully");
-                res.status(200).send({
-                    message: "User data updated successfully",
-                });
-            } else {
-                res.status(404).send({
-                    message: "User does not exist",
-                });
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-            res.status(400).send({
-                message: "An error occured",
-            });
-        });
+    updateClientData(res, "user", req.body)
 }
 
 // Update user password
@@ -182,5 +125,6 @@ module.exports = {
     updateUserData,
     updateUserPassword,
     loginUser,
-    resetUserPassword
+    resetUserPassword,
+    findUser
 };
