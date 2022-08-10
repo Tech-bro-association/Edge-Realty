@@ -9,36 +9,26 @@ const { User } = require("../models/userModel"),
 
 function resetPassword(user_id) {
     return new Promise((resolve, reject) => {
-        User.findOne({ _id: user_id, user_type: "regular" })
-            .then(response => {
+        let token = randomToken(16),
+            user_email = response.email;
+        TempPassword.findOne({ user_id_fkey: user_id }) // Find user with userId in TempPassword collection
+            .then((response) => {
+                /* null response - Add new id and token to temppassword collection
+                        response - Update user token in temmPassword collection */
                 if (response) {
-                    let token = randomToken(16),
-                        user_email = response.email;
-                    TempPassword.findOne({ user_id_fkey: user_id }) // Find user with userId in TempPassword collection
-                        .then((response) => {
-                            /* null response - Add new id and token to temppassword collection
-                                    response - Update user token in temmPassword collection */
-                            if (response) {
-                                updateOrCreateTempPassword(user_id, token, true).then(resolve({ status: "OK" }));
-                                /* true -> Update, false -> Create */
-                            } else {
-                                updateOrCreateTempPassword(user_id, token, false).then(resolve({ status: "OK" }));
-                            }
-                            mailTemporaryDetails(user_email, token);
-
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                            reject(error)
-                        });
+                    updateOrCreateTempPassword(user_id, token, true).then(resolve({ status: "OK" }));
+                    /* true -> Update, false -> Create */
                 } else {
-                    reject(error)
-                };
-            }).catch(error => {
-                console.log(error);
+                    updateOrCreateTempPassword(user_id, token, false).then(resolve({ status: "OK" }));
+                }
+                mailTemporaryDetails(user_email, token);
+
+            })
+            .catch((error) => {
+                console.log(error)
+                reject(error)
             });
     })
-
 }
 
 async function updateOrCreateTempPassword(user_id, token, update) {

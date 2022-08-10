@@ -2,7 +2,7 @@ const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
 const checkPassword = require("../controllers/passwordController").checkPassword;
-
+const { addNewClient, findClientMatch } = require("./commonController")
 
 
 function loginUser(req, res) {
@@ -60,35 +60,36 @@ function addNewUser(req, res, next) {
         address: data.address,
     });
 
+    addNewClient(res, "user", user, data)
     // Check if user already exists
-    findUserMatch(data.email).then((response) => {
-        if (response) {
-            res.status(400).send({
-                message: "User already exists",
-            });
-        } else {
-            // Try using Transactions here
-            try {
-                let temp_id;
-                user.save().then((response) => {
-                    savePassword(response._id, data.password)
-                        .then((response) => {
-                            console.log(response)
-                            temp_id = response._id
-                            res.status(200).send({ message: "User added successfully" })
-                        })
-                        .catch((error) => {
-                            res.status(400).send({ message: "An error occured" })
-                            throw error;
-                        })
-                    console.log('[OK] - Password Saved')
-                })
-            } catch (error) {
-                user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
-                console.log(error)
-            }
-        }
-    }).catch(error => console.log(error));
+    // findUserMatch(data.email).then((response) => {
+    //     if (response) {
+    //         res.status(400).send({
+    //             message: "User already exists",
+    //         });
+    //     } else {
+    //         // Try using Transactions here
+    //         try {
+    //             let temp_id;
+    //             user.save().then((response) => {
+    //                 savePassword(response._id, data.password)
+    //                     .then((response) => {
+    //                         console.log(response)
+    //                         temp_id = response._id
+    //                         res.status(200).send({ message: "User added successfully" })
+    //                     })
+    //                     .catch((error) => {
+    //                         res.status(400).send({ message: "An error occured" })
+    //                         throw error;
+    //                     })
+    //                 console.log('[OK] - Password Saved')
+    //             })
+    //         } catch (error) {
+    //             user.findOneAndDelete({ _id: temp_id }).then(response => console.log(response))
+    //             console.log(error)
+    //         }
+    //     }
+    // }).catch(error => console.log(error));
 };
 
 // Update user data
@@ -162,17 +163,17 @@ async function resetUserPassword(req, res) {
         })
 }
 
-function addPropertyToCart (req, res) {}
+function addPropertyToCart(req, res) { }
 
-function completePayment (req, res) {}
+function completePayment(req, res) { }
 
-function showTransactionHistory (req, res) {}
+function showTransactionHistory(req, res) { }
 
-function bookAppointment (req, res) {}
+function bookAppointment(req, res) { }
 
-function signupForNewsletter (req, res) {}
+function signupForNewsletter(req, res) { }
 
-function reportAgent (req, res) {}
+function reportAgent(req, res) { }
 
 
 
