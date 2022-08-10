@@ -1,7 +1,9 @@
 const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
-const { addNewClient, findClientMatch, updateClientData, authenticateClientLogin } = require("./commonController")
+const { addNewClient, findClientMatch,
+    updateClientData, authenticateClientLogin,
+    resetClientPassword } = require("./commonController")
 
 
 function loginUser(req, res) {

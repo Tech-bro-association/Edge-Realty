@@ -1,4 +1,4 @@
-const { savePassword, checkPassword } = require("./passwordController");
+const { savePassword, checkPassword, resetPassword } = require("./passwordController");
 
 // const { loginUser } = require("./userController");
 
@@ -20,6 +20,7 @@ async function authenticateClientLogin(res, client_type, client_data, client = n
         clientModel = clients[client_type];
         let search_response = await clientModel.findOne({ email: client_data.email })
         console.log(search_response)
+
         checkPassword(search_response._id, client_data.password)
             .then((response) => {
                 console.log(response)
@@ -27,6 +28,7 @@ async function authenticateClientLogin(res, client_type, client_data, client = n
                     res.status(200).send({ message: "User Logged in successfully" });
                 } if (response == false) { throw error }
             })
+
     } catch (error) {
         console.log(error)
         res.status(404).send({
@@ -34,7 +36,6 @@ async function authenticateClientLogin(res, client_type, client_data, client = n
         });
     }
 }
-
 
 // findUserMatch for user, admin, or agent
 async function findClientMatch(client_type, client_email) {
@@ -96,6 +97,24 @@ async function updateClientData(res, client_type, client_data, client = null) {
 
 }
 
+async function resetClientPassword(res, client_type, client_data, client = null) {
+    try {
+        clientModel = clients[client_type];
+        let response_data = await clientModel.findOne({ email: client_data.email, type: client_data.type || "regular" });
+        if (response_data) {
+            resetPassword(response._id).then((response) => {
+                if (response) {
+                    console.log('[OK] - ' + response)
+                    res.status(200).send({ message: "Temporary reset token sent to user email" })
+                } else { throw error }
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(404).send({ message: "User account does not exist" })
+    }
+
+}
 module.exports = {
     addNewClient,
     findClientMatch,
