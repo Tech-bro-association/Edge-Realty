@@ -1,5 +1,5 @@
 const { savePassword, checkPassword, resetPassword } = require("./passwordController");
-
+const randomToken = require("random-token")
 // const { loginUser } = require("./userController");
 
 const User = require("../models/userModel").User,
@@ -97,24 +97,7 @@ async function updateClientData(res, client_type, client_data, client = null) {
 
 }
 
-async function resetClientPassword(res, client_type, client_data, client = null) {
-    try {
-        clientModel = clients[client_type];
-        let response_data = await clientModel.findOne({ email: client_data.email, type: client_data.type || "regular" });
-        if (response_data) {
-            resetPassword(response._id).then((response) => {
-                if (response) {
-                    console.log('[OK] - ' + response)
-                    res.status(200).send({ message: "Temporary reset token sent to user email" })
-                } else { throw error }
-            })
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(404).send({ message: "User account does not exist" })
-    }
 
-}
 module.exports = {
     addNewClient,
     findClientMatch,

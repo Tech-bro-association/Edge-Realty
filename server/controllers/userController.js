@@ -2,9 +2,9 @@ const User = require("../models/userModel").User;
 const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
 const { addNewClient, findClientMatch,
-    updateClientData, authenticateClientLogin,
-    resetClientPassword } = require("./commonController")
-
+    updateClientData, authenticateClientLogin } = require("./commonController")
+const {
+    resetClientPassword } = require("../controllers/passwordController");
 
 function loginUser(req, res) {
     console.log('--- Login User ---')
@@ -83,29 +83,22 @@ function updateUserPassword(req, res) {
 
 // resetUserPassword
 async function resetUserPassword(req, res) {
-    User.findOne({ email: req.body.email, type: "regular" })
-        .then((response) => {
-            if (response) {
-                resetPasssword(response._id).then((response) => {
-                    if (response) {
-                        console.log('[OK] - ' + response)
-                        res.status(200).send({ message: "Temporary reset token sent to user email" })
-                    }
-
-                }, (error) => {
-                    console.log(error)
-                    res.status(401).send({ message: "User account does not exist" })
+    try {
+        let search_response = await User.findOne({ email: req.body.email, type: "regular" })
+        if (search_response) {
+            resetClientPassword(res, "regular", search_response)
+                .then(response => {
+                    if (response == "OK") {
+                        res.status(200).send({ message: "Temporary Token sent to User email" })
+                    } else { throw "An error occured" }
                 });
 
-            } else {
-                res.status(404).send({
-                    message: "User does not exist",
-                });
-            }
-        })
-        .catch(error => {
-            console.log(error)
-        })
+        } else { res.status(404).send({ message: "User does not exist" }) }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(400).send({ message: "An error occured" });
+    }
 }
 
 function addPropertyToCart(req, res) { }

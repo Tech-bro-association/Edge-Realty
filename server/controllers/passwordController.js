@@ -31,27 +31,24 @@ function resetPassword(user_id) {
     })
 }
 
-async function updateOrCreateTempPassword(user_id, token, update) {
-    if (update == true) {
-        await TempPassword.findOneAndUpdate(user_id, {
-            token: token
-        }).then((response) => {
-            console.log(response);
-        });
-        await TempPassword.findOne(user_id).then((response) => {
-            console.log(response);
-        });
-    } else {
-        let userNewTempPassword = new TempPassword({
+async function updateOrCreateTempPassword(user_id, token, task) {
+    if (task == "update") {
+        return await TempPassword.findOneAndUpdate({ user_id_fkey: user_id }, { token: token }, { new: true })
+            .then((response) => {
+                console.log("[OK] - Temp password updated successfully");
+            })
+    }
+    if (task == "create") {
+        return await TempPassword.create({
             user_id_fkey: user_id,
             token: token
-        });
-        await userNewTempPassword.save().then((response) => {
-            console.log(response);
-        }, (error) => { console.log(error) }).catch(error => console.log(error));
+        })
+            .then((response) => {
+                console.log("[OK] - Temp password created successfully");
+            })
     }
+}
 
-};
 
 function mailTemporaryDetails(user_email, token) {
     let message =
@@ -198,9 +195,80 @@ function checkPassword(user_id, user_password) {
     })
 }
 
+
+async function resetClientPassword(res, client_type, client_data, client = null) {
+    try {
+        return new Promise((resolve, reject) => {
+            let token = randomToken(16),
+                search_response = TempPassword.findOne({ user_id_fkey: client_data._id });
+
+            /* case 1: user has requested a password reset before - update the temp password */
+            if (search_response) { updateOrCreateTempPassword(client_data._id, token, "update") }
+
+            /* case 2: user has not requested a password reset before - create a new temp password */
+            else { updateOrCreateTempPassword(client_data._id, token, "create") }
+
+            mailTemporaryPassword(client_data._email, token)
+            resolve({ status: "OK" })
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send({ message: "An error occured" });
+    }
+
+}
+
+async function updateOrCreateTempPassword(user_id, token) {
+    try {
+        let search_response = await TempPassword.findOne({ user_id_fkey: user_id });
+        if (search_response) {
+            TempPassword.findOneAndUpdate({ user_id_fkey: user_id }, { token: token })
+                .then((response) => {
+                    console.log("[OK] - Temp password updated successfully");
+                })
+        } else {
+            TempPassword.create({ user_id_fkey: user_id, token: token })
+                .then((response) => {
+                    console.log("[OK] - Temp password created successfully");
+                })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function checkTempPassword(user_id, token) {
+    try {
+        let search_response = await TempPassword.findOne({ user_id_fkey: user_id, token: token });
+        if (search_response) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function deleteTempPassword(user_id) {
+    try {
+        TempPassword.findOneAndDelete({ user_id_fkey: user_id })
+            .then((response) => {
+                console.log("[OK] - Temp password deleted successfully");
+            })
+    } catch (error) {
+        console.log(error)
+        res.status(404).send({ message: "User account does not exist" })
+    }
+
+}
+
 module.exports = {
     savePassword,
     checkPassword,
     resetPassword,
-    confirmResetToken
+    confirmResetToken,
+    resetClientPassword,
+    checkTempPassword,
+    deleteTempPassword,
 }
