@@ -159,7 +159,7 @@ async function confirmResetToken(req, res) {
             client_data = await findClientMatch(req.body.client_type, user_email);
 
         if (client_data) {
-            let search_response = await TempPassword.findOne({ user_id_fkey: client_data._id, token: token });
+            let search_response = await TempPassword.findOneAndDelete({ user_id_fkey: client_data._id, token: token });
 
             if (search_response) {
                 console.log("[OK] - Token Match found")
@@ -198,19 +198,6 @@ async function changeOldPassword(req, res) {
 
 }
 
-async function deleteResetToken(user_id) {
-    try {
-        TempPassword.findOneAndDelete({ user_id_fkey: user_id })
-            .then((_response) => {
-                console.log("[OK] - Temp password deleted successfully");
-            })
-    } catch (error) {
-        console.log(error)
-        res.status(404).send({ message: "User account does not exist" })
-    }
-
-}
-
 module.exports = {
     savePassword,
     checkPassword,
@@ -219,5 +206,4 @@ module.exports = {
     changeOldPassword,
     sendResetToken,
     confirmResetToken,
-    deleteResetToken,
 }
