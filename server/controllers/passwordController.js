@@ -54,7 +54,7 @@ async function hashPassword(password) {
     return password
 }
 
-async function checkHash(password, hash, res = null) {
+async function checkHash(password, hash, _res = null) {
     return await bcrypt.compare(password, hash)
         .then(response => { return response })
 }
@@ -104,7 +104,7 @@ async function resetClientPassword(req, res) {
         let client_data = await findClientMatch(req.body.client_type, req.body.email)
         console.log(client_data)
         if (client_data) {
-            let reset_response = await sendResetToken(req.body.client_type, client_data);
+            let reset_response = await sendResetToken(client_data);
             if (reset_response == "OK") {
                 res.status(200).send({ message: "Reset token sent to user's email" });
             } else {
@@ -121,17 +121,17 @@ async function resetClientPassword(req, res) {
 async function updateOrCreateResetToken(user_id, token, task) {
     if (task == "update") {
         return await TempPassword.findOneAndUpdate({ user_id_fkey: user_id }, { token: token }, { new: true })
-            .then((response) => { console.log("[OK] - Temp password updated successfully") })
+            .then((_response) => { console.log("[OK] - Temp password updated successfully") })
     }
     if (task == "create") {
         return await TempPassword.create({
             user_id_fkey: user_id,
             token: token
-        }).then((response) => { console.log("[OK] - Temp password created successfully") })
+        }).then((_response) => { console.log("[OK] - Temp password created successfully") })
     }
 }
 
-async function sendResetToken(client_type, client_data) {
+async function sendResetToken(client_data) {
     try {
         let token = randomToken(16),
             search_response = await TempPassword.findOne({ user_id_fkey: client_data._id });
@@ -201,7 +201,7 @@ async function changeOldPassword(req, res) {
 async function deleteResetToken(user_id) {
     try {
         TempPassword.findOneAndDelete({ user_id_fkey: user_id })
-            .then((response) => {
+            .then((_response) => {
                 console.log("[OK] - Temp password deleted successfully");
             })
     } catch (error) {
