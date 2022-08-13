@@ -10,7 +10,7 @@ const connectDatabase = require("./connectDB");
 
 const PORT = process.env.PORT || 5520;
 const userRoute = require("./routes/userRoute");
-const clientsRoute = require("./routes/clientsRoute");
+const authRoute = require("./routes/authRoute");
 // const adminRoute = require("./routes/adminRoute");
 // const agentRoute = require("./routes/agentRoute");
 
@@ -19,7 +19,7 @@ app.use(morgan("tiny"));
 app.use(express.json());
 
 app.use("/api/user", userRoute);
-app.use("/api/password/", clientsRoute)
+app.use("/api/auth/", authRoute)
 // app.use("/api/agent", agentRoute);
 // app.use("/api/admin", adminRoute);
 
