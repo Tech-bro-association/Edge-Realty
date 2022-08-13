@@ -86,12 +86,11 @@ async function resetUserPassword(req, res) {
     try {
         let search_response = await User.findOne({ email: req.body.email, type: "regular" })
         if (search_response) {
-            resetClientPassword(res, "regular", search_response)
-                .then(response => {
-                    if (response == "OK") {
-                        res.status(200).send({ message: "Temporary Token sent to User email" })
-                    } else { throw "An error occured" }
-                });
+            let response = await resetClientPassword(res, "regular", search_response);
+            
+            if (response == "OK") {
+                res.status(200).send({ message: "Temporary Token sent to User email" })
+            } else { throw "An error occured" }
 
         } else { res.status(404).send({ message: "User does not exist" }) }
     }

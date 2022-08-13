@@ -198,19 +198,17 @@ function checkPassword(user_id, user_password) {
 
 async function resetClientPassword(res, client_type, client_data, client = null) {
     try {
-        return new Promise((resolve, reject) => {
-            let token = randomToken(16),
-                search_response = TempPassword.findOne({ user_id_fkey: client_data._id });
+        let token = randomToken(16),
+            search_response = TempPassword.findOne({ user_id_fkey: client_data._id });
 
-            /* case 1: user has requested a password reset before - update the temp password */
-            if (search_response) { updateOrCreateTempPassword(client_data._id, token, "update") }
+        /* case 1: user has requested a password reset before - update the temp password */
+        if (search_response) { await updateOrCreateTempPassword(client_data._id, token, "update") }
 
-            /* case 2: user has not requested a password reset before - create a new temp password */
-            else { updateOrCreateTempPassword(client_data._id, token, "create") }
+        /* case 2: user has not requested a password reset before - create a new temp password */
+        else { await updateOrCreateTempPassword(client_data._id, token, "create") }
 
-            mailTemporaryPassword(client_data._email, token)
-            resolve({ status: "OK" })
-        })
+        await mailTemporaryDetails(client_data.email, token)
+        return "OK"
     } catch (error) {
         console.log(error);
         res.status(400).send({ message: "An error occured" });
