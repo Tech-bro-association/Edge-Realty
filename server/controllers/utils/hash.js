@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const { Password } = require("../../models/passwordModel");
 
+// Accepts password and returns hashed password
 async function hashPassword(password) {
     let saltRounds = 10
     await bcrypt.hash(password, saltRounds)
@@ -8,6 +9,7 @@ async function hashPassword(password) {
     return password
 }
 
+// Checks if password matches saved hash value
 async function checkHash(password, hash, _res = null) {
     return await bcrypt.compare(password, hash)
         .then(response => { return response })
