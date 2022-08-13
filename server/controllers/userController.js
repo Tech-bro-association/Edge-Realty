@@ -1,27 +1,12 @@
 const User = require("../models/userModel").User;
-const resetPasssword = require("../controllers/passwordController").resetPassword;
 const savePassword = require("../controllers/passwordController").savePassword;
-const { addNewClient, findClientMatch,
-    updateClientData, authenticateClientLogin } = require("./commonController")
-const {
-    resetClientPassword } = require("../controllers/passwordController");
+const { addNewClient,
+        updateClientData, authenticateClientLogin } = require("./commonController");
 
 function loginUser(req, res) {
     console.log('--- Login User ---')
     console.log(req.body)
     authenticateClientLogin(res, "user", req.body)
-}
-
-//  Find user match
-function findUserMatch(user_email) {
-    return User.findOne({ email: user_email })
-        .then((response) => {
-            return response != null
-        }
-        ).catch((error) => {
-            console.log(error);
-            return false
-        });
 }
 
 // Add new user to db
@@ -60,27 +45,6 @@ function updateUserData(req, res) {
     updateClientData(res, "user", req.body)
 }
 
-// Update user password
-function updateUserPassword(req, res) {
-    User.findOne({ email: req.body.email })
-        .then((response) => {
-            if (response) {
-                let user_id = response._id;
-                // Update password in passwordDB
-                savePassword(user_id, req.body.password);
-            } else {
-                res.status(404).send({
-                    message: "User does not exist",
-                });
-            }
-        })
-        .catch((error) => {
-            res.status(400).send({
-                message: "An error occured",
-            });
-        });
-}
-
 function addPropertyToCart(req, res) { }
 
 function completePayment(req, res) { }
@@ -98,7 +62,6 @@ function reportAgent(req, res) { }
 module.exports = {
     addNewUser,
     updateUserData,
-    updateUserPassword,
     loginUser,
     findUser
 };
