@@ -81,25 +81,6 @@ function updateUserPassword(req, res) {
         });
 }
 
-// resetUserPassword
-async function resetUserPassword(req, res) {
-    try {
-        let search_response = await User.findOne({ email: req.body.email, type: "regular" })
-        if (search_response) {
-            let response = await resetClientPassword(res, "regular", search_response);
-            
-            if (response == "OK") {
-                res.status(200).send({ message: "Temporary Token sent to User email" })
-            } else { throw "An error occured" }
-
-        } else { res.status(404).send({ message: "User does not exist" }) }
-    }
-    catch (error) {
-        console.log(error);
-        res.status(400).send({ message: "An error occured" });
-    }
-}
-
 function addPropertyToCart(req, res) { }
 
 function completePayment(req, res) { }
@@ -119,6 +100,5 @@ module.exports = {
     updateUserData,
     updateUserPassword,
     loginUser,
-    resetUserPassword,
     findUser
 };

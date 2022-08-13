@@ -14,7 +14,7 @@ const clients = {
 
 let clientModel;
 
-
+/* Require: client_type, client_data, client_id */
 async function authenticateClientLogin(res, client_type, client_data, client = null) {
     try {
         clientModel = clients[client_type];
@@ -37,13 +37,19 @@ async function authenticateClientLogin(res, client_type, client_data, client = n
     }
 }
 
-// findUserMatch for user, admin, or agent
+/* Require: client_type, client_email;
+   Returns: client_data in DB | false */
 async function findClientMatch(client_type, client_email) {
     try {
+        console.log(client_type, client_email)
         clientModel = clients[client_type];
-        await clientModel.findOne({ email: client_email })
+        return await clientModel.findOne({ email: client_email })
             .then((response) => {
-                return response != null
+                console.log(response)
+                return response
+            }).catch((error) => {
+                console.log(error)
+                return false
             })
     } catch (error) {
         console.log(error);
@@ -52,11 +58,12 @@ async function findClientMatch(client_type, client_email) {
 
 }
 
+/* Require: http_response_obj client_type, client_data, client_model */
 async function addNewClient(res, client_type, client_data, client) {
     try {
         let match = await findClientMatch(client_type, client_data.email);
 
-        if (match) {
+        if (match == "OK") {
             res.status(400).send({ message: "User already exists" });
         } else {
             let temp_id;
@@ -75,6 +82,7 @@ async function addNewClient(res, client_type, client_data, client) {
     }
 }
 
+/* Require: http_response_obj, client_type, client_data */
 async function updateClientData(res, client_type, client_data, client = null) {
     try {
         clientModel = clients[client_type];
