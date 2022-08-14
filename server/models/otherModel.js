@@ -19,8 +19,8 @@ const propertySchema = new Schema({
 }, { timestamps: true });
 
 const transactionSchema = new Schema({
-    agent_id_fkey: { type: String },
-    user_id_fkey: { type: String },
+    agent_email_fkey: { type: String },
+    user_email_fkey: { type: String },
     property_id_fkey: { type: String },
     transaction_type: { type: String },
     transaction_date: { type: Date },
@@ -42,8 +42,15 @@ const appointmentSchema = new Schema({
     date_created: { type: Date },
 }, { timestamps: true });
 
+const cartSchema = new Schema({
+    user_email_fkey: { type: String },
+    properties: { type: Array }
+}, { timestamps: true });
+
+
 const Transaction = mongoose.model("Transactions", transactionSchema),
     Property = mongoose.model("Properties", propertySchema),
-    Appointment = mongoose.model("Appointments", appointmentSchema);
+    Appointment = mongoose.model("Appointments", appointmentSchema),
+    Cart = mongoose.model("Carts", cartSchema);
 
 module.exports = { Transaction, Property };
