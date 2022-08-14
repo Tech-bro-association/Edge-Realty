@@ -22,22 +22,6 @@ function addNewUser(req, res) {
     addNewClient(res, "user", data, user)
 };
 
-function findUser(req, res) {
-    try {
-        User.findOne({ _id: req.body._id })
-            .then((response) => {
-                if (response) {
-                    console.log(response)
-                    res.status(200).send({ message: "User found" })
-                } else {
-                    res.status(404).send({ message: "User not found" })
-                }
-            })
-    } catch (error) {
-
-    }
-}
-
 // Update user data
 function updateUserData(req, res) {
     updateClientData(res, "user", req.body)
@@ -61,5 +45,4 @@ module.exports = {
     addNewUser,
     updateUserData,
     loginUser,
-    findUser
 };
