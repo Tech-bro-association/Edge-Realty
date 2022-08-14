@@ -1,28 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
 const agentSchema = new Schema(
     {
-        name: {
-            type: String,
+        name: { type: String },
+        email: { type: String },
+        profile_picture: { type: String },
+        description: { type: String },
+        contact: {
+            linkedln: { type: String },
+            facebook: { type: String },
+            instagram: { type: String },
+            twitter: { type: String },
+            phone: { type: String },
         },
-        email: {
-            type: String,
-        },
-        password: {
-            type: String,
-        },
-        user_type: {
-            type: String,
-        },
-        address: {
-            type: String,
-        },
+        signup_type: { type: String }
     },
-    { timestamps: true }
-);
-
+    { timestamps: true });
 
 const Agent = mongoose.model("Agents", agentSchema);
 
