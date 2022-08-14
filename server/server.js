@@ -11,6 +11,7 @@ const connectDatabase = require("./connectDB");
 const PORT = process.env.PORT || 5520;
 const userRoute = require("./routes/userRoute");
 const authRoute = require("./routes/authRoute");
+const {verifyAccessToken} = require("./middleware/accessToken");
 // const adminRoute = require("./routes/adminRoute");
 // const agentRoute = require("./routes/agentRoute");
 
@@ -18,8 +19,10 @@ app.use(cors({ origin: ["http://127.0.0.1:5500", "http://localhost:8080"] }));
 app.use(morgan("tiny"));
 app.use(express.json());
 
+
 app.use("/api/user", userRoute);
-app.use("/api/auth/", authRoute)
+app.use("/api/auth/", authRoute);
+app.use("/api/secure/", (req, res, next) => { verifyAccessToken(req, res, next) });
 // app.use("/api/agent", agentRoute);
 // app.use("/api/admin", adminRoute);
 

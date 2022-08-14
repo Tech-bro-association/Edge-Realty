@@ -1,7 +1,5 @@
 const User = require("../models/userModel").User;
-const savePassword = require("../controllers/passwordController").savePassword;
-const { addNewClient,
-        updateClientData, authenticateClientLogin } = require("./commonController");
+const { addNewClient, updateClientData, authenticateClientLogin } = require("./commonController");
 
 function loginUser(req, res) {
     console.log('--- Login User ---')
@@ -10,7 +8,7 @@ function loginUser(req, res) {
 }
 
 // Add new user to db
-function addNewUser(req, res, next) {
+function addNewUser(req, res) {
     let data = req.body;
     console.log("--- Request body ---");
     console.log(req.body);

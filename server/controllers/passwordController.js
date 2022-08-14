@@ -3,6 +3,7 @@ const { Password, TempPassword } = require("../models/passwordModel"),
     { hashPassword, checkHash } = require("./utils/hash.js"),
     { transporter, mailOptions } = require("./utils/emailService.js"),
     { findClientMatch } = require("./commonController"),
+    { saveAccessToken } = require("../middleware/accessToken"),
     randomToken = require("random-token"),
     htmlHostAddress = "http://localhost:8080";
 
@@ -64,14 +65,13 @@ async function authenticateClientLogin(req, res) {
         let search_response = await clientModel.findOne({ email: req.body.email })
         console.log(search_response)
         if (search_response) {
-            await checkPassword(search_response._id, req.body.password)
-                .then((response) => {
-                    console.log("found password")
-                    /* console.log(response) */
-                    if (response) {
-                        res.status(200).send({ message: "User Logged in successfully" });
-                    } if (response == false) { throw "User password incorrect" }
-                })
+            let response = await checkPassword(search_response._id, req.body.password);
+            if (response) {
+                let access_token = randomToken(16);
+                saveAccessToken(req.body.email, access_token);
+                res.status(200).send({ message: "User Logged in successfully", access_token: access_token });
+            } if (response == false) { throw "User password incorrect" }
+
         } else {
             throw "User not found"
         }
@@ -155,7 +155,6 @@ async function sendResetToken(client_data) {
         console.log(error);
         return "ERROR"
     }
-
 }
 
 async function confirmResetToken(req, res) {
