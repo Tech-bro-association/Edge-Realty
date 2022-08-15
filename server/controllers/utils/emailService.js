@@ -1,25 +1,23 @@
 const nodemailer = require("nodemailer");
+const email_service_pass = process.env.EMAIL_SERVICE_PASS;
+const email_service_address = process.env.EMAIL_SERVICE_ADDRESS;
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "journalprojectjs@gmail.com",
-        pass: newFunction()
+        user: email_service_address,
+        pass: email_service_pass
     }
 });
 
-function newFunction() {
-    return "abnnrzypwzqulhuj";
-}
-
-const mailOptions = (emailAddress, subject, message) => {
+function mailOptions(email_address, subject, message) {
     return {
         from: "journalprojectjs@gmail.com",
-        to: emailAddress,
+        to: email_address,
         subject: subject,
         text: message
     };
-};
+}
 
 function sendMail(mail_data) {
     return new Promise((resolve, reject) => {
@@ -30,7 +28,7 @@ function sendMail(mail_data) {
                 mail_data.message
             );
 
-            // Send token and resetLink to user's Email address
+            // Send token and reset link to user's Email address
             transporter.sendMail(user_mail_option, (error, info) => {
                 if (error) { throw error } else { console.log("Email sent: " + info.response); resolve(info) }
             });
@@ -39,7 +37,6 @@ function sendMail(mail_data) {
             reject(error)
         }
     })
-
 };
 
 

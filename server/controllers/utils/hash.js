@@ -23,7 +23,6 @@ async function saveHash(user_id, user_password) {
                 password: hash,
             });
             new_password.save().then(response => {
-                console.log(response)
                 resolve(response);
             }).catch(error => {
                 reject(error);

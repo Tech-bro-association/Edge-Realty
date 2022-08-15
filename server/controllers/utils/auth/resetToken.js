@@ -4,20 +4,6 @@ const { sendMail } = require("../emailService");
 const randomToken = require("random-token");
 const server_address = process.env.server_address;
 
-
-async function updateOrCreateResetToken(user_id, token, task) {
-    if (task == "update") {
-        return await TempPassword.findOneAndUpdate({ user_id_fkey: user_id }, { token: token }, { new: true })
-            .then((_response) => { console.log("[OK] - Temp password updated successfully"); });
-    }
-    if (task == "create") {
-        return await TempPassword.create({
-            user_id_fkey: user_id,
-            token: token
-        }).then((_response) => { console.log("[OK] - Temp password created successfully"); });
-    }
-}
-
 const mail_message = (user_email, server_address, token) => {
     return "You requested a password reset for your JounalX account\n\n" +
         "You have been assigned a temporary password" +
@@ -38,6 +24,19 @@ const mail_message = (user_email, server_address, token) => {
         "If you did not request a password reset, please ignore this email.\n\n" +
         "Regards,\n" +
         "JounalX team";
+}
+
+async function updateOrCreateResetToken(user_id, token, task) {
+    if (task == "update") {
+        return await TempPassword.findOneAndUpdate({ user_id_fkey: user_id }, { token: token }, { new: true })
+            .then((_response) => { console.log("[OK] - Temp password updated successfully"); });
+    }
+    if (task == "create") {
+        return await TempPassword.create({
+            user_id_fkey: user_id,
+            token: token
+        }).then((_response) => { console.log("[OK] - Temp password created successfully"); });
+    }
 }
 
 async function sendResetToken(client_data) {
@@ -72,13 +71,10 @@ async function confirmResetToken(req, res) {
             let search_response = await TempPassword.findOneAndDelete({ user_id_fkey: client_data._id, token: token });
 
             if (search_response) {
-                console.log("[OK] - Token Match found");
                 res.status(200).send({ message: "Token Match found" });
             } else {
-                console.log("[Error] Token Match not found");
                 throw "Token Match not found";
             }
-
         } else { throw "An error occured"; }
 
     } catch (error) {

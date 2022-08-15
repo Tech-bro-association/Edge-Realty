@@ -16,16 +16,9 @@ let clientModel;
    Returns: client_data in DB | false */
 async function findClientMatch(client_type, client_email) {
     try {
-        console.log(client_type, client_email)
         clientModel = clients[client_type];
         return await clientModel.findOne({ email: client_email })
-            .then((response) => {
-                console.log(response)
-                return response
-            }).catch((error) => {
-                console.log(error)
-                return false
-            })
+            .then((response) => { return response }).catch((error) => { throw error })
     } catch (error) {
         console.log(error);
         return false
@@ -42,10 +35,8 @@ async function addNewClient(res, client_type, client_data, client) {
         } else {
             let temp_id;
             let saved_details = await client.save();
-            console.log(saved_details);
             saveNewPassword(saved_details._id, client_data.password)
                 .then((response) => {
-                    console.log(response);
                     temp_id = response._id;
                     res.status(200).send({ message: "User added succesfully" });
                 });
@@ -60,11 +51,9 @@ async function addNewClient(res, client_type, client_data, client) {
 async function updateClientData(res, client_type, client_data, client = null) {
     try {
         clientModel = clients[client_type];
-        console.log(client)
         clientModel.findOneAndUpdate({ email: client_data.email }, client_data)
             .then((response) => {
                 if (response) {
-                    console.log("[OK] - User updated successfully");
                     res.status(200).send({ message: "User Data updated successfully" })
                 } else {
                     res.status(404).send({

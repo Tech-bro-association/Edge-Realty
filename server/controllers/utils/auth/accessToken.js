@@ -24,7 +24,6 @@ async function verifyAccessToken(req, res, next) {
     try {
         let response = await AccessToken.findOne({ user_email_fkey: req.body.email, access_token: req.body.access_token });
         if (response) {
-            console.log("[OK] - Access Token Match found")
             next();
         } else {
             res.status(401).send({ message: "Access token is invalid" });

@@ -47,29 +47,23 @@ async function authenticateClientLogin(req, res) {
 
 /* Resolves true or false if password matches saved hash value */
 function checkPassword(user_id, user_password) {
-    return new Promise((resolve, reject) => {
-        Password.findOne({ user_id_fkey: user_id })
-            .then(response => {
-                console.log("password found")
-                /* console.log(response) */
-                if (response) {
-                    (async () => {
-                        let result = await checkHash(user_password, response.password)
-                            .then(response => { return response })
-                        resolve(result);
-                    })()
-                }
-            }).catch(error => {
-                reject(error);
-            });
+    return new Promise(async(resolve, reject) => {
+        try {
+            let search_result = await Password.findOne({ user_id_fkey: user_id })
+            if (search_result) {
+                search_result = await checkHash(user_password, search_result.password)
+                resolve(search_result);
+            }
+        } catch (error) {
+            console.log(error);
+            reject(error);
+        }
     })
 }
 
 async function resetClientPassword(req, res) {
     try {
-        console.log(req.body)
         let client_data = await findClientMatch(req.body.client_type, req.body.email)
-        console.log(client_data)
         if (client_data) {
             let reset_response = await sendResetToken(client_data);
             if (reset_response == "OK") {
@@ -88,17 +82,14 @@ async function resetClientPassword(req, res) {
 async function changeOldPassword(req, res) {
     try {
         let client_data = await findClientMatch(req.body.client_type, req.body.email);
-        // console.log(client_data)
         if (client_data) {
             let hash = await hashPassword(req.body.new_password)
             if (hash) {
-                await Password.findOne({ user_id_fkey: client_data._id }).then((response) => { /* console.log(response) */ }, (error) => { console.log(error) })
+                await Password.findOne({ user_id_fkey: client_data._id }).then((response) => { }, (error) => { console.log(error) })
 
                 await Password.findOneAndUpdate({ user_id_fkey: client_data._id }, { password: hash }, { upsert: false })
-                    .then((response) => {
-                        /* console.log(response) */
-                    })
-                await Password.findOne({ user_id_fkey: client_data._id }).then((response) => { /* console.log(response) */ })
+                    .then((response) => { })
+                await Password.findOne({ user_id_fkey: client_data._id }).then((response) => { })
                 res.status(200).send({ message: "Password changed successfully" });
             }
         } else { throw "An error occured" }
