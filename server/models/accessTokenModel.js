@@ -8,6 +8,11 @@ const accessTokenSchema = new Schema({
     access_token: {
         type: String,
     },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 33400,
+    },
 });
 
 const AccessToken = mongoose.model("AccessTokens", accessTokenSchema);

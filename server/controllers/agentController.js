@@ -1,8 +1,8 @@
 
 const Agent = require("../models/AgentModel").Agent;
 const { Property, Transaction, Appointment } = require("../models/otherModel");
-const { addNewClient, updateClientData, authenticateClientLogin } = require("./commonController");
-const { mailOptions }{ transporter, mailOptions } = require("./utils/emailService.js");
+const { addNewClient, updateClientData, authenticateClientLogin } = require("./common/commonController");
+const { transporter, mailOptions } = require("./utils/emailService.js");
 
 function loginAgent(req, res) {
     console.log('--- Login Agent ---')

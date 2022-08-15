@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const passwordController = require("../controllers/passwordController")
+const {resetClientPassword, changeOldPassword, authenticateClientLogin} = require("../controllers/utils/auth/passwordAuth")
+const { confirmResetToken  } = require("../controllers/utils/auth/resetToken")
 
-router.post("/resetpassword", passwordController.resetClientPassword);
-router.post("/confirmtoken", passwordController.confirmResetToken);
-router.post("/changepassword", passwordController.changeOldPassword);
-router.post('/login', passwordController.authenticateClientLogin);
+router.post("/resetpassword", resetClientPassword);
+router.post("/confirmtoken", confirmResetToken);
+router.post("/changepassword", changeOldPassword);
+router.post('/login', authenticateClientLogin);
 
 module.exports = router;
