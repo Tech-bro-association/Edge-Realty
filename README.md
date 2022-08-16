@@ -18,6 +18,15 @@ It API includes;
 - Update user data
 - Delete existing user admin priviledges) soon...
 
+## Setup
+
+- Clone repo
+- From server folder
+  > npm install
+- Add MongoDB URI and email credentials to .env file
+  > npm start
+- Test endpoints
+
 ## Overview of auth system:
 
 1. User registers account. Password is hashed and salted with bcrypt before being stored in the database.
@@ -29,7 +38,7 @@ It API includes;
 6. On log out this access token will be deleted from the database and a new token will be required for next session.
 7. Max life for access token is 12hrs if logout endpoint isn't called.
 
-# Password reset
+## Password reset
 
 1. User sends password reset request
 2. API issues a reset token and sends to user's email address (token expires after 2mins).
@@ -37,3 +46,5 @@ It API includes;
 4. API confirms token then updates user's password in DB.
 
 The email client requires an email address and password, not the password to the email, but a secondary password to access email function with google.
+
+More API doc coming soon..
