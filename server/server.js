@@ -11,7 +11,7 @@ const connectDatabase = require("./db/connectDB");
 const PORT = process.env.PORT || 5520;
 const userRoute = require("./routes/userRoute");
 const authRoute = require("./routes/authRoute");
-const {verifyAccessToken} = require("./controllers/utils/auth/accessToken");
+const { verifyAccessToken } = require("./controllers/utils/auth/accessToken");
 // const adminRoute = require("./routes/adminRoute");
 // const agentRoute = require("./routes/agentRoute");
 
