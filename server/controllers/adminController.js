@@ -1,31 +1,19 @@
-// function findAgent(req, res) {
-//     try {
-//         Agent.findOne({ _id: req.body._id })
-//             .then((response) => {
-//                 if (response) {
-//                     console.log(response)
-//                     res.status(200).send({ message: "Agent found" })
-//                 } else {
-//                     res.status(404).send({ message: "Agent not found" })
-//                 }
-//             })
-//     } catch (error) {
+const { User } = require("../models/userModel"),
+    { Agent } = require("../models/agentModel"),
+    { Admin } = require("../models/adminModel");
 
-//     }
-// }
 
-// function findUser(req, res) {
-//     try {
-//         User.findOne({ _id: req.body._id })
-//             .then((response) => {
-//                 if (response) {
-//                     console.log(response)
-//                     res.status(200).send({ message: "User found" })
-//                 } else {
-//                     res.status(404).send({ message: "User not found" })
-//                 }
-//             })
-//     } catch (error) {
+async function deleteUser(req, res) {}
 
-//     }
-// }
+async function deleteAgent(req, res) {}
+
+async function getUserTransactionHistory(req, res) {}
+
+async function getAgentTransactionHistory(req, res) {}
+
+module.exports = {
+    deleteUser,
+    deleteAgent,
+    getUserTransactionHistory,
+    getAgentTransactionHistory,
+}
