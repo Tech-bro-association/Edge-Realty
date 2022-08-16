@@ -16,14 +16,14 @@ The project includes a RESTful API built for a Real-estate listing website
 
 
 
-The project uses ;
-
+### The project uses ;
 - Mongoose for data modelling.
 - Express.js for server setup.
 - randomtoken node.js module as authentication token
 - bcrypt to hash passwords before storing in database
 
-It API includes; Clients => User, Agents, Admin 
+Clients => User, Agents, Admin
+### It API includes  
 - Client registration
 - Login
 - Password Reset with email support
