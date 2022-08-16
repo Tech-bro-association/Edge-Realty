@@ -28,3 +28,12 @@ It API includes;
 5. Protected endpoints send request through authentication middleware, which checks token received in request to exist in database.
 6. On log out this access token will be deleted from the database and a new token will be required for next session.
 7. Max life for access token is 12hrs if logout endpoint isn't called.
+
+# Password reset
+
+1. User sends password reset request
+2. API issues a reset token and sends to user's email address (token expires after 2mins).
+3. User sends request with new password and reset-token.
+4. API confirms token then updates user's password in DB.
+
+The email client requires an email address and password, not the password to the email, but a secondary password to access email function with google.
