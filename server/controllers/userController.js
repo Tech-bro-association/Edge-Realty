@@ -1,7 +1,6 @@
 const User = require("../models/userModel").User;
-const { addNewClient, updateClientData, authenticateClientLogin } = require("./common/clientsCommonController");
-const { Transaction, Cart, Property } = require("../models/cartPropertyTransactionModel.");
-const { Appointment } = require("../models/clientsCommonModel");
+const { addNewClient, updateClientData } = require("./common/clientsCommonController");
+const { Appointment } = require("../models/appointmentModel");
 
 // Add new user to db
 function addNewUser(req, res) {
@@ -23,22 +22,6 @@ function updateUserData(req, res) {
     updateClientData(res, "user", req.body)
 }
 
-
-
-async function searchProperties(req, res) {
-    try {
-        let query = req.query;
-        let properties = Property.find(query);
-        properties.exec()
-            .then(response => {
-                res.status(200).send(response)
-            })
-    } catch (error) {
-        console.log(error)
-        res.status(500).send(error)
-    }
-}
-
 function signupForNewsletter(req, res) { }
 
 
@@ -46,6 +29,5 @@ function signupForNewsletter(req, res) { }
 module.exports = {
     addNewUser,
     updateUserData,
-    searchProperties,
     signupForNewsletter,
 };
