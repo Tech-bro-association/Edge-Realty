@@ -1,7 +1,7 @@
 const User = require("../models/userModel").User;
 const { addNewClient, updateClientData, authenticateClientLogin } = require("./common/clientsCommonController");
 const { Transaction, Cart, Property } = require("../models/cartPropertyTransactionModel.");
-const { Appointment } = require("../models/clientCommonModel");
+const { Appointment } = require("../models/clientsCommonModel");
 
 // Add new user to db
 function addNewUser(req, res) {
@@ -46,12 +46,6 @@ function signupForNewsletter(req, res) { }
 module.exports = {
     addNewUser,
     updateUserData,
-    addPropertyToCart,
-    removePropertyFromCart,
-    getCartItems,
-    checkoutCart,
     searchProperties,
-    showTransactionHistory,
-    bookAppointment,
     signupForNewsletter,
 };

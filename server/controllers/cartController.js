@@ -1,4 +1,4 @@
-const { Cart, Property} = require("../models/cartPropertyTransactionModel.");
+const { Cart, Property } = require("../models/cartPropertyTransactionModel.");
 
 async function addPropertyToCart(req, res) {
     try {
@@ -89,4 +89,13 @@ async function clearCart(res, res) {
         console.log(error)
         res.status(500).send(error)
     }
+}
+
+
+module.exports = {
+    addPropertyToCart,
+    removePropertyFromCart,
+    getCartItems,
+    checkoutCart,
+    clearCart,
 }
