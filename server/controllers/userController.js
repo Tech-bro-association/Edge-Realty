@@ -1,7 +1,7 @@
 const User = require("../models/userModel").User;
 const { addNewClient, updateClientData, authenticateClientLogin } = require("./common/clientsCommonController");
-const { Transaction, Cart, Property, Appointment } = require("../models/cartModel");
-
+const { Transaction, Cart, Property } = require("../models/cartPropertyTransactionModel.");
+const { Appointment } = require("../models/clientCommonModel");
 
 // Add new user to db
 function addNewUser(req, res) {

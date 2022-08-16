@@ -1,4 +1,4 @@
-const { Cart, Property} = require("../models/cartModel");
+const { Cart, Property} = require("../models/cartPropertyTransactionModel.");
 
 async function addPropertyToCart(req, res) {
     try {
