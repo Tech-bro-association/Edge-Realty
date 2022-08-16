@@ -47,4 +47,10 @@ It API includes;
 
 The email client requires an email address and password, not the password to the email, but a secondary password to access email function with google.
 
+#
+
 More API doc coming soon..
+
+#
+
+Feedback and PR's are welcomed. Contact me on [Richie Moluno](https://twitter.com/MolunoRichie)
