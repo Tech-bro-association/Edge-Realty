@@ -15,13 +15,37 @@ async function searchProperties(req, res) {
     }
 }
 
-async function addNewPropertyListing() {
+async function addNewPropertyListing(property_data) {
+    try {
+        let property = new Property(property_data);
+        await property.save();
+        return property;
+    } catch (error) {
+        console.log(error)
+        return error
+    }
 }
 
-async function removePropertyListing() {
+async function removePropertyListing(property_id) {
+    try {
+        let property = await Property.findById(property_id);
+        await property.remove();
+        return property;
+    } catch (error) {
+        console.log(error)
+        return error
+    }
 }
 
-async function updatePropertyListing() {
+
+async function updatePropertyListing(property_id, property_data) {
+    try {
+        let property = await Property.findByIdAndUpdate(property_id, property_data, { new: true });
+        return property;
+    } catch (error) {
+        console.log(error)
+        return error
+    }
 }
 
 module.exports = {
