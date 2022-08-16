@@ -23,13 +23,18 @@ The project uses ;
 - randomtoken node.js module as authentication token
 - bcrypt to hash passwords before storing in database
 
-It API includes;
-
-- User registration
+It API includes; Clients => User, Agents, Admin 
+- Client registration
 - Login
-- Password Reset
-- Update user data
-- Delete existing user (admin priviledges) soon...
+- Password Reset with email support
+- Access tokens for secured sessions
+- CRUD operations for clients
+- CRUD operations for property Listings
+- CRUD operations for Cart
+- Transaction History for users and Agents
+- Booking appointment between users and Agents (soon)
+- Report user or Agent (soon)
+- Delete existing user 
 
 ## Setup
 
