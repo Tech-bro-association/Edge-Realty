@@ -1,6 +1,11 @@
-const { Cart } = require("../models/cartModel.");
 const { User } = require("../models/userModel"),
     { Agent } = require("../models/agentModel"),
+    { Password } = require("../models/passwordModel"),
+    { Appointment } = require("../models/appointmentModel"),
+    { Cart } = require("../models/cartModel"),
+    { Transaction } = require("../models/transactionModel"),
+    { Property } = require("../models/propertyModel"),
+    { Cart } = require("../models/cartModel.");
 
 const { findClientMatch } = require("../controllers/common/clientsCommonController");
 
@@ -27,7 +32,7 @@ async function deleteUser(req, res) {
     }
 }
 
-async function deleteAgent(req, res) { 
+async function deleteAgent(req, res) {
     try {
         let client_id;
         let client_data = await findClientMatch(req.body.client_type, req.body.email)
@@ -38,7 +43,7 @@ async function deleteAgent(req, res) {
         await Appointment.findOneAndDelete({ agent_email_fkey: req.body.client_email });
         await Cart.findOneAndDelete({ agent_email_fkey: req.body.client_email });
         await Transaction.findOneAndDelete({ agent_email_fkey: req.body.client_email });
-        await Property.findOneAndDelete({agent_email_fkey: req.body.client_email});
+        await Property.findOneAndDelete({ agent_email_fkey: req.body.client_email });
 
         res.status(200).send({ message: "Agent deleted successfully" });
     } catch (error) {
@@ -47,13 +52,44 @@ async function deleteAgent(req, res) {
     }
 }
 
-async function getUserTransactionHistory(req, res) { }
+async function getClientTransactionHistory(req, res) {
+    try {
+        let client_id, transaction_history;
+        let client_data = await findClientMatch(req.body.client_type, req.body.email)
+        if (client_data) { client_id = client_data._id };
 
-async function getAgentTransactionHistory(req, res) { }
+        if (req.body.client_type == "user") { let transaction_history = await Transaction.find({ user_email_fkey: req.body.client_email }); }
+        if (req.body.client_type == "agent") { let transaction_history = await Transaction.find({ agent_email_fkey: req.body.client_email }); }
+
+        res.status(200).send({ transaction_history });
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+}
+
+async function getAgentPropertyListingHistory(req, res) {
+    try {
+        let client_id;
+        let client_data = await findClientMatch(req.body.client_type, req.body.email)
+        if (client_data) { client_id = client_data._id };
+
+        let property_history = await Property.find({ agent_email_fkey: req.body.client_email });
+
+        res.status(200).send({ property_history });
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+}
+
+async function getClientAppointmentHistory(req, res) { }
+
+async function getClientCartHistory(req, res) { }
+
 
 module.exports = {
     deleteUser,
     deleteAgent,
-    getUserTransactionHistory,
-    getAgentTransactionHistory,
+    getClientTransactionHistory,
 }
