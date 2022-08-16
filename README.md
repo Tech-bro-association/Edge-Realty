@@ -1,6 +1,6 @@
 # Edge-Realty
 Real estate listing project
-# Node.js + Express.js + MongoDB Authentication API
+# Edge-Realty web API
 
 The project includes a RESTful API built for a Real-estate listing website
 
