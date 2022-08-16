@@ -1,5 +1,3 @@
-# Edge-Realty
-Real estate listing project
 # Edge-Realty web API
 
 The project includes a RESTful API built for a Real-estate listing website
@@ -11,19 +9,20 @@ The project includes a RESTful API built for a Real-estate listing website
 - It is capable of responding to user requests regarding, Listing and Removing New Properties, custom search queries for properties stored in the the database.
 
 - Other functions include, administrative tasks by the web admin. These tasks include;
--- Keeping track of all transactions made by users.
--- Removing Agents.
-
-
+  -- Keeping track of all transactions made by users.
+  -- Removing Agents.
 
 ### The project uses ;
+
 - Mongoose for data modelling.
 - Express.js for server setup.
 - randomtoken node.js module as authentication token
 - bcrypt to hash passwords before storing in database
 
 Clients => User, Agents, Admin
-### It API includes  
+
+### It API includes
+
 - Client registration
 - Login
 - Password Reset with email support
@@ -34,7 +33,7 @@ Clients => User, Agents, Admin
 - Transaction History for users and Agents
 - Booking appointment between users and Agents (soon)
 - Report user or Agent (soon)
-- Delete existing user 
+- Delete existing user
 
 ## Setup
 
@@ -72,6 +71,3 @@ More API doc coming soon..
 #
 
 Feedback and PR's are welcomed. Contact me on [Richie Moluno](https://twitter.com/MolunoRichie)
-
-
-
