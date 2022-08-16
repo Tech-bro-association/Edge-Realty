@@ -68,6 +68,11 @@ async function updateClientData(res, client_type, client_data, client = null) {
 
 }
 
+async function bookAppointment(req, res) { }
+
+async function showTransactionHistory(req, res) { }
+
+async function reportAgent(req, res) { }
 
 module.exports = {
     addNewClient,

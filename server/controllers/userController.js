@@ -2,11 +2,6 @@ const User = require("../models/userModel").User;
 const { addNewClient, updateClientData, authenticateClientLogin } = require("./common/clientsCommonController");
 const { Transaction, Cart, Property, Appointment } = require("../models/otherModel");
 
-function loginUser(req, res) {
-    console.log('--- Login User ---')
-    console.log(req.body)
-    authenticateClientLogin(res, "user", req.body)
-}
 
 // Add new user to db
 function addNewUser(req, res) {
@@ -28,47 +23,35 @@ function updateUserData(req, res) {
     updateClientData(res, "user", req.body)
 }
 
-function addPropertyToCart(req, res) {
+async function addPropertyToCart(req, res) {
     try {
-        Cart.findOne({ user_email_fkey: req.body.email })
-            .then(response => {
-                if (response) {
-                    response.properties.push(req.body.property_id)
-                    response.save()
-                        .then(response => {
-                            res.status(200).send(response)
-                        })
-                } else {
-                    let cart = new Cart({
-                        user_email_fkey: req.body.email,
-                        properties: [req.body.property_id]
-                    })
-                    cart.save()
-                        .then(response => {
-                            res.status(200).send(response)
-                        })
-                }
+        let response = await Cart.findOne({ user_email_fkey: req.body.email });
+        if (response) {
+            response.propertires.push(req.body.property_id);
+            await response.save();
+            res.status(200).send(response);
+        } else {
+            let cart = new Cart({
+                user_email_fkey: req.body.email,
+                properties: [req.body.property_id]
             })
+            await cart.save();
+            res.status(200).send(cart); // Send cart object
+        }
     } catch (error) {
         console.log(error)
         res.status(500).send(error)
     }
 }
 
-function removePropertyFromCart(req, res) {
+async function removePropertyFromCart(req, res) {
     try {
-        Cart.findOne({ user_email_fkey: req.body.email })
-            .then(response => {
-                if (response) {
-                    response.properties.pull(req.body.property_id)
-                    response.save()
-                        .then(response => {
-                            res.status(200).send(response)
-                        })
-                } else {
-                    res.status(200).send(response)
-                }
-            })
+        let response = await Cart.findOne({ user_email_fkey: req.body.email });
+        if (response) {
+            response.properties.pull(req.body.property_id);
+            await response.save();
+            res.status(200).send(response);
+        } else { res.status(200).send(response) }
     } catch (error) {
         console.log(error)
         res.status(500).send(error)
@@ -121,7 +104,17 @@ async function checkoutCart(req, res) {
     // }
 }
 
-function searchProperties(req, res) {
+async function clearCart(res, res) {
+    try {
+        let response = await Cart.findOneAndDelete({ user_email_fkey: req.body.email });
+        if (response) { res.status(200).send(response) }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
+    }
+}
+
+async function searchProperties(req, res) {
     try {
         let query = req.query;
         let properties = Property.find(query);
@@ -135,19 +128,13 @@ function searchProperties(req, res) {
     }
 }
 
-function showTransactionHistory(req, res) { }
-
-function bookAppointment(req, res) { }
-
 function signupForNewsletter(req, res) { }
 
-function reportAgent(req, res) { }
 
 
 module.exports = {
     addNewUser,
     updateUserData,
-    loginUser,
     addPropertyToCart,
     removePropertyFromCart,
     getCartItems,
@@ -156,5 +143,4 @@ module.exports = {
     showTransactionHistory,
     bookAppointment,
     signupForNewsletter,
-    reportAgent
 };
