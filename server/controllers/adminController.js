@@ -92,4 +92,5 @@ module.exports = {
     deleteUser,
     deleteAgent,
     getClientTransactionHistory,
+    getAgentPropertyListingHistory,
 }
