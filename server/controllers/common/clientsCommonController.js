@@ -2,12 +2,10 @@
 const saveNewPassword = require("../utils/hash").saveHash;
 
 const User = require("../../models/userModel").User,
-    Agent = require("../../models/agentModel").AgentModel,
     Admin = require("../../models/adminModel").AdminModel;
 
 const clients = {
     "user": User,
-    "agent": Agent,
     "admin": Admin
 }
 let clientModel;

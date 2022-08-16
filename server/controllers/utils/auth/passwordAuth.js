@@ -7,12 +7,10 @@ const { Password, } = require("../../../models/passwordModel"),
     randomToken = require("random-token");
 
 const User = require("../../../models/userModel").User,
-    Agent = require("../../../models/agentModel").AgentModel,
     Admin = require("../../../models/adminModel").AdminModel;
 
 const clients = {
     "user": User,
-    "agent": Agent,
     "admin": Admin
 }
 let clientModel;
@@ -47,7 +45,7 @@ async function authenticateClientLogin(req, res) {
 
 /* Resolves true or false if password matches saved hash value */
 function checkPassword(user_id, user_password) {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         try {
             let search_result = await Password.findOne({ user_id_fkey: user_id })
             if (search_result) {
