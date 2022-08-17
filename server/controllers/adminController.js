@@ -83,7 +83,7 @@ async function getAgentPropertyListingHistory(req, res) {
     }
 }
 
-async function getClientAppointmentHistory(req, res) { 
+async function getClientAppointmentHistory(req, res) {
     try {
         let client_id;
         let client_data = await findClientMatch(req.body.client_type, req.body.email)
@@ -93,10 +93,11 @@ async function getClientAppointmentHistory(req, res) {
         if (req.body.client_type == "agent") { let appointment_history = await Appointment.find({ agent_email_fkey: req.body.client_email }); }
 
         res.status(200).send({ appointment_history });
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(error)
     }
 }
-
-async function getUserCartHistory(req, res) { }
 
 
 module.exports = {
