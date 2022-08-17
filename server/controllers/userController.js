@@ -23,7 +23,7 @@ function updateUserData(req, res) {
     updateClientData(res, "user", req.body)
 }
 
-function bookAppointment(req, res) {
+async function bookAppointment(req, res) {
     try {
         let new_appointment_data = {
             agent_email_fkey: req.body.agent_email,
