@@ -115,6 +115,7 @@ async function getAllAgentListings(req, res) {
         res.status(500).send({ message: "An error occured" })
     }
 }
+
 async function bookAppointment(req, res) {
     try {
         let new_appointment_data = {
