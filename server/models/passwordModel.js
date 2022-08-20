@@ -3,25 +3,25 @@ const Schema = mongoose.Schema;
 
 const passwordSchema = new Schema({
     user_id_fkey: {
-        type: String,
+        type: String, required: true
     },
     password: {
-        type: String,
+        type: String, required: true
     },
 });
 
 const tempPasswordSchema = new Schema({
     user_id_fkey: {
-        type: String,
+        type: String, required: true
     },
     agent_id_fkey: {
-        type: String,
+        type: String, required: true
     },
     admin_id_fkey: {
-        type: String,
+        type: String, required: true
     },
     token: {
-        type: String,
+        type: String, required: true
     },
     createdAt: {
         type: Date,
