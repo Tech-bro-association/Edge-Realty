@@ -1,38 +1,36 @@
 
-const Agent = require("../models/AgentModel").Agent;
+const Agent = require("../models/agentModel").Agent;
 const { Property } = require("../models/propertyModel"),
     { Transaction } = require("../models/transactionModel");
-const { addNewPropertyListing, updatePropertyListing } = require("./common/propertyCommonController");
-const { addNewClient, updateClientData, authenticateClientLogin } = require("./common/commonController");
+const { addNewPropertyListing, updatePropertyListing } = require("./propertiesController");
+const { addNewClient, updateClientData } = require("./common/clientsCommonController");
+const { authenticateClientLogin } = require("./utils/auth/passwordAuth")
 const { scheduleAppointment } = require("./common/appointment");
 
-function loginAgent(req, res) {
-    console.log('--- Login Agent ---')
+async function loginAgent(req, res) {
     console.log(req.body)
     authenticateClientLogin(res, "agent", req.body)
 }
 
 // Add new Agent to db
-function addNewAgent(req, res) {
+async function addNewAgent(req, res) {
     let data = req.body;
-    console.log("--- Request body ---");
-    console.log(req.body);
-    let Agent = new Agent({
+    let agent = new Agent({
         name: data.name,
         email: data.email,
         Agent_type: data.signup_type || "regular",
         address: data.address,
     });
 
-    addNewClient(res, "Agent", data, Agent)
+    addNewClient(res, "agent", data, agent)
 };
 
 // Update Agent data
-function updateAgentData(req, res) {
-    updateClientData(res, "Agent", req.body)
+async function updateAgentData(req, res) {
+    updateClientData(res, "agent", req.body)
 }
 
-function showTransactionHistory(req, res) {
+async function showTransactionHistory(req, res) {
     try {
         Transaction.find({ agent_id: req.body.agent_id })
             .then(response => {
@@ -44,7 +42,7 @@ function showTransactionHistory(req, res) {
     }
 }
 
-function addListing(req, res) {
+async function addListing(req, res) {
     try {
         let new_listing_data = {
             agent_email_fkey: req.body.agent_email,
@@ -70,7 +68,7 @@ function addListing(req, res) {
     }
 }
 
-function removeListing(req, res) {
+async function removeListing(req, res) {
     try {
         let property = await removePropertyListin(req.body.property_id)
         if (property) {
@@ -82,7 +80,7 @@ function removeListing(req, res) {
     }
 }
 
-function updateListing(req, res) {
+async function updateListing(req, res) {
     try {
         let property = await updatePropertyListing(req.body.property_id, req.body)
         if (property) {
@@ -94,7 +92,7 @@ function updateListing(req, res) {
     }
 }
 
-function bookAppointment (req, res) {
+async function bookAppointment(req, res) {
     try {
         let new_appointment_data = {
             agent_email_fkey: req.body.agent_email,
@@ -102,10 +100,10 @@ function bookAppointment (req, res) {
             date: req.body.date,
             time: req.body.time,
             notes: req.body.notes,
-            status: "pending", 
+            status: "pending",
             client_type: "agent"
         }
-        let response =  await scheduleAppointment(res, new_appointment_data)
+        let response = await scheduleAppointment(res, new_appointment_data)
         if ((response) && (response.length > 0)) {
             res.status(200).send(response)
         } else { throw "An error occured" }

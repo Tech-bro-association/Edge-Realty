@@ -2,8 +2,8 @@
 const saveNewPassword = require("../utils/hash").saveHash;
 
 const User = require("../../models/userModel").User,
-    Agent = require("../../models/agentModel").AgentModel,
-    Admin = require("../../models/adminModel").AdminModel;
+    Agent = require("../../models/agentModel").Agent,
+    Admin = require("../../models/adminModel").Admin;
 
 const clients = {
     "user": User,
@@ -39,9 +39,10 @@ async function addNewClient(res, client_type, client_data, client) {
                 .then((response) => {
                     temp_id = response._id;
                     res.status(200).send({ message: "User added succesfully" });
-                });
+                }, (error) => { throw error });
         }
     } catch (error) {
+        await client.findOneAndDelete({ email: client_data.email })
         console.log(error);
         res.status(400).send({ message: "An error occured" });
     }

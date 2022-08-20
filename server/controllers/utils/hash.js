@@ -3,10 +3,22 @@ const { Password } = require("../../models/passwordModel");
 
 // Accepts password and returns hashed password
 async function hashPassword(password) {
-    let saltRounds = 10
-    await bcrypt.hash(password, saltRounds)
-        .then(hash => password = hash)
-    return password
+    try {
+        return new Promise(async (resolve, reject) => {
+            let saltRounds = 10
+            await bcrypt.hash(password, saltRounds)
+                .then((response) => {
+                    if (response) { password = response }
+                    else { throw "An error occured" }
+                }, (error) => { reject(error) })
+            resolve(password)
+        })
+
+    } catch (error) {
+        console.log(error)
+        return error
+    }
+
 }
 
 // Checks if password matches saved hash value
@@ -24,14 +36,12 @@ async function saveHash(user_id, user_password) {
             });
             new_password.save().then(response => {
                 resolve(response);
-            }).catch(error => {
+            }, (error) => {
                 reject(error);
-            });
-        }
-        ).catch(error => {
+            })
+        }, (error) => {
             reject(error);
-        }
-        );
+        })
     }); // Promise
 }
 

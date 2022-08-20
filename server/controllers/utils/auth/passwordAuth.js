@@ -7,8 +7,8 @@ const { Password, } = require("../../../models/passwordModel"),
     randomToken = require("random-token");
 
 const User = require("../../../models/userModel").User,
-    Agent = require("../../../models/agentModel").AgentModel,
-    Admin = require("../../../models/adminModel").AdminModel;
+    Agent = require("../../../models/agentModel").Agent,
+    Admin = require("../../../models/adminModel").Admin;
 
 const clients = {
     "user": User,

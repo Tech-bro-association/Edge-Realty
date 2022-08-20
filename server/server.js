@@ -10,6 +10,7 @@ const connectDatabase = require("./db/connectDB");
 
 const PORT = process.env.PORT || 5520;
 const userRoute = require("./routes/userRoute");
+const agentRoute = require("./routes/agentRoute")
 const authRoute = require("./routes/authRoute");
 const {verifyAccessToken} = require("./middleware/accessToken");
 // const adminRoute = require("./routes/adminRoute");
@@ -23,7 +24,7 @@ app.use(express.json());
 app.use("/api/user", userRoute);
 app.use("/api/auth/", authRoute);
 app.use("/api/secure/", (req, res, next) => { verifyAccessToken(req, res, next) });
-// app.use("/api/agent", agentRoute);
+app.use("/api/agent", agentRoute);
 // app.use("/api/admin", adminRoute);
 
 const start = async () => {
