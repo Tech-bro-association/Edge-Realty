@@ -41,6 +41,7 @@ async function getAll(req, res) {
         res.status(500).send({ message: "An error occured" })
     }
 }
+
 async function showTransactionHistory(req, res) {
     try {
         Transaction.find({ agent_id: req.body.agent_id })
@@ -61,15 +62,15 @@ async function addListing(req, res) {
             address: req.body.address,
             images: req.body.images,
             description: req.body.description,
-            specification: {
-                price: req.body.price,
-                bedrooms: req.body.bedrooms,
-                bathrooms: req.body.bathrooms,
-                area: req.body.area
+            specifications: {
+                price: req.body.specifications.price,
+                bedrooms: req.body.specifications.bedrooms,
+                bathrooms: req.body.specifications.bathrooms,
+                area: req.body.specifications.area
             },
             year_built: req.body.year_built
         }
-        let new_listing = await addNewPropertyListing(res, new_listing_data)
+        let new_listing = await addNewPropertyListing(new_listing_data)
         if (new_listing) {
             res.status(200).send(new_listing)
         } else { throw "An error occured" }

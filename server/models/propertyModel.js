@@ -6,15 +6,16 @@ const propertySchema = new Schema({
     name: { type: String },
     address: { type: String },
     city: { type: String },
-    images: { type: Array },
+    images: { type: String },
     description: { type: String },
     tag: { type: String },
     specifications: {
-        price: { type: Number },
-        bedrooms: { type: Number },
-        bathrooms: { type: Number },
-        area: { type: Number },
-    },
+        price: { type: String },
+        bedrooms: { type: String },
+        bathrooms: { type: String },
+        area: { type: String }
+    }
+    ,
     year_built: { type: Number }
 }, { timestamps: true });
 
