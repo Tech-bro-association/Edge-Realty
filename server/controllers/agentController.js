@@ -95,7 +95,7 @@ async function removeListing(req, res) {
 
 async function updateListing(req, res) {
     try {
-        let property = await updatePropertyListing(req.body.property_id, req.body)
+        let property = await updatePropertyListing(req.body._id, req.body)
         if (property) {
             res.status(200).send(property)
         } else { throw "An error occured" }
