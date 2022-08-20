@@ -6,7 +6,7 @@ const cartController = require("../controllers/cartController");
 const {searchProperties} = require("../controllers/propertiesController");
 
 router.post("/register", userController.addNewUser);
-router.post("/updatedata", userController.updateUserData);
+router.patch("/updatedata", userController.updateUserData);
 router.post("/cart/add", cartController.addPropertyToCart);
 router.post("/cart/remove", cartController.removePropertyFromCart);
 router.post("/cart/get", cartController.getCartItems);

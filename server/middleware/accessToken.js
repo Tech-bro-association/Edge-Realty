@@ -1,4 +1,4 @@
-const AccessToken = require("../../../models/accessTokenModel").AccessToken;
+const AccessToken = require("../models/accessTokenModel").AccessToken;
 
 async function saveAccessToken(user_email, access_token) {
     try {

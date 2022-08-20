@@ -63,17 +63,18 @@ async function sendResetToken(client_data) {
     }
 }
 
-async function confirmResetToken(req, res) {
+async function confirmResetToken(req) {
     try {
-        let user_email = req.body.email, token = req.body.token, client_data = await findClientMatch(req.body.client_type, user_email);
+        let user_email = req.body.email,
+            token = req.body.token,
+            client_data = await findClientMatch(req.body.client_type, user_email);
 
         if (client_data) {
             let search_response = await TempPassword.findOneAndDelete({ user_id_fkey: client_data._id, token: token });
-
             if (search_response) {
-                res.status(200).send({ message: "Token Match found" });
+                return true
             } else {
-                throw "Token Match not found";
+                return false;
             }
         } else { throw "An error occured"; }
 
