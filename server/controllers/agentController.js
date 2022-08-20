@@ -31,7 +31,7 @@ async function updateAgentData(req, res) {
     updateClientData(res, "agent", req.body)
 }
 
-async function getAll(req, res) {
+async function getAllAgents(req, res) {
     try {
         console.log('afinf')
         let response = await Agent.find()
@@ -105,6 +105,16 @@ async function updateListing(req, res) {
     }
 }
 
+async function getAllAgentListings(req, res) {
+    try {
+        console.log('afinf')
+        let response = await Agent.find({agent_email_fkey: req.body.agent_email_fkey})
+        res.status(200).send(response)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: "An error occured" })
+    }
+}
 async function bookAppointment(req, res) {
     try {
         let new_appointment_data = {
@@ -130,11 +140,12 @@ async function bookAppointment(req, res) {
 module.exports = {
     addNewAgent,
     updateAgentData,
-    getAll,
+    getAllAgents,
     loginAgent,
     showTransactionHistory,
     bookAppointment,
     addListing,
     removeListing,
-    updateListing
+    updateListing,
+    getAllAgentListings
 };
