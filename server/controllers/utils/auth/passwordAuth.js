@@ -62,6 +62,7 @@ function checkPassword(user_id, user_password) {
 async function resetClientPassword(req, res) {
     try {
         let client_data = await findClientMatch(req.body.client_type, req.body.email)
+        console.log(client_data)
         if (client_data) {
             let reset_response = await sendResetToken(client_data);
             if (reset_response == "OK") {

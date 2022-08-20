@@ -12,13 +12,13 @@ const passwordSchema = new Schema({
 
 const tempPasswordSchema = new Schema({
     user_id_fkey: {
-        type: String, required: true
+        type: String,
     },
     agent_id_fkey: {
-        type: String, required: true
+        type: String,
     },
     admin_id_fkey: {
-        type: String, required: true
+        type: String, 
     },
     token: {
         type: String, required: true
