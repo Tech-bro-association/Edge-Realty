@@ -2,7 +2,7 @@
 const Agent = require("../models/agentModel").Agent;
 const { Property } = require("../models/propertyModel"),
     { Transaction } = require("../models/transactionModel");
-const { addNewPropertyListing, updatePropertyListing } = require("./propertiesController");
+const { addNewPropertyListing, updatePropertyListing, removePropertyListing } = require("./propertiesController");
 const { addNewClient, updateClientData } = require("./common/clientsCommonController");
 const { authenticateClientLogin } = require("./utils/auth/passwordAuth")
 const { scheduleAppointment } = require("./common/appointment");
@@ -82,7 +82,8 @@ async function addListing(req, res) {
 
 async function removeListing(req, res) {
     try {
-        let property = await removePropertyListin(req.body.property_id)
+        let property = await removePropertyListing(req.body._id)
+        
         if (property) {
             res.status(200).send(property)
         } else { throw "An error occured" }

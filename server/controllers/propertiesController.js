@@ -28,8 +28,7 @@ async function addNewPropertyListing(property_data) {
 
 async function removePropertyListing(property_id) {
     try {
-        let property = await Property.findById(property_id);
-        await property.remove();
+        let property = await Property.findByIdAndDelete(property_id);
         return property;
     } catch (error) {
         console.log(error)
