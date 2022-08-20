@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const agentSchema = new Schema(
     {
         name: { type: String },
-        email: { type: String, required: true },
+        email: { type: String, required: true, unmodifiable: true },
         profile_picture: { type: String },
         description: { type: String },
         contact: {

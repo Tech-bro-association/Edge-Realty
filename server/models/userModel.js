@@ -7,7 +7,7 @@ const userSchema = new Schema(
       type: String, required: true
     },
     email: {
-      type: String, required: true
+      type: String, required: true, unmodifiable: true
     },
     user_type: {
       type: String, required: true
