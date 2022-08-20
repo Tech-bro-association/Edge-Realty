@@ -66,7 +66,6 @@ async function updateClientData(res, client_type, client_data, client = null) {
         console.log(error);
         res.status(400).send({ message: "An error occured" });
     }
-
 }
 
 async function bookAppointment(req, res) { }

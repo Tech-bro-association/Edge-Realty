@@ -27,9 +27,20 @@ async function addNewAgent(req, res) {
 
 // Update Agent data
 async function updateAgentData(req, res) {
+    console.log('updating agent data')
     updateClientData(res, "agent", req.body)
 }
 
+async function getAll(req, res) {
+    try {
+        console.log('afinf')
+        let response = await Agent.find()
+        res.status(200).send(response)
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: "An error occured" })
+    }
+}
 async function showTransactionHistory(req, res) {
     try {
         Transaction.find({ agent_id: req.body.agent_id })
@@ -117,6 +128,7 @@ async function bookAppointment(req, res) {
 module.exports = {
     addNewAgent,
     updateAgentData,
+    getAll,
     loginAgent,
     showTransactionHistory,
     bookAppointment,

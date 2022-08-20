@@ -24,7 +24,7 @@ app.use(express.json());
 app.use("/api/user", userRoute);
 app.use("/api/auth/", authRoute);
 app.use("/api/secure/", (req, res, next) => { verifyAccessToken(req, res, next) });
-app.use("/api/agent", agentRoute);
+app.use("/api/agent/", agentRoute);
 // app.use("/api/admin", adminRoute);
 
 const start = async () => {
