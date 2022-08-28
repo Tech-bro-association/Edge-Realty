@@ -34,6 +34,7 @@ Clients => User, Agents, Admin
 - Booking appointment between users and Agents (soon)
 - Report user or Agent (soon)
 - Delete existing user
+- Restrictions for user roles
 
 ## Setup
 
