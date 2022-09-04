@@ -5,28 +5,31 @@ const app = express();
 
 const cors = require("cors");
 const morgan = require("morgan");
+const errorHandler = require("./middlewares/errorHandler")
 
 const connectDatabase = require("./db/connectDB");
 
-const PORT = process.env.PORT || 5520;
-const userRoute = require("./routes/userRoute");
-const agentRoute = require("./routes/agentRoute")
-const authRoute = require("./routes/authRoute");
-const {verifyAccessToken} = require("./middleware/accessToken");
-// const adminRoute = require("./routes/adminRoute");
-// const agentRoute = require("./routes/agentRoute");
+// Routes
+const userRoute = require("./routes/userRoute"),
+  agentRoute = require("./routes/agentRoute"),
+  adminRoute = require("./routes/adminRoute"),
+  authRoute = require("./routes/authRoute"),
+  { verifyAccessToken } = require("./middleware/accessToken");
 
-app.use(cors({ origin: ["http://127.0.0.1:5500", "http://localhost:8080"] }));
-app.use(morgan("tiny"));
-app.use(express.json());
-
-
-app.use("/api/user", userRoute);
-app.use("/api/auth/", authRoute);
-app.use("/api/secure/", (req, res, next) => { verifyAccessToken(req, res, next) });
+// Middlewares
+app.use(morgan("dev"))
+app.use(express.json())
+app.use('/api/auth', authRoute)
+app.use('/api/auth/user', userRoute)
 app.use("/api/agent/", agentRoute);
-// app.use("/api/admin", adminRoute);
+app.use('/api/auth/admin', adminRoute)
+app.use("/api/secure/", (req, res, next) => { verifyAccessToken(req, res, next) });
 
+
+app.use(errorHandler)
+
+// Server connection
+const PORT = process.env.PORT || 5520;
 const start = async () => {
   try {
     // Initialize database
