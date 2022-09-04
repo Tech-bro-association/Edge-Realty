@@ -10,7 +10,7 @@ const errorHandler = require("./middlewares/errorHandler")
 const connectDatabase = require("./db/connectDB");
 
 // Routes
-const userRoute = require("./routes/userRoute"),
+const userRoute = require("./routes/endUserRoute"),
   agentRoute = require("./routes/agentRoute"),
   adminRoute = require("./routes/adminRoute"),
   authRoute = require("./routes/authRoute"),
