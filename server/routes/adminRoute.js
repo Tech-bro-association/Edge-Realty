@@ -6,6 +6,8 @@ const { login } = require('../controllers/admin/adminAuthController')
 
 // Admin controls
 router.
+    post('/signup', signup).
+    post('/verify', ),
     post('/login', login)
 
 // Post login routes should require user.isActive
