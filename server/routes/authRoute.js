@@ -10,5 +10,5 @@ router.
     post('/password/reset', passwordReset).
     put('/password/confirmreset', confirmResetAndChangePassword)
 
-
+ 
 module.exports = router
