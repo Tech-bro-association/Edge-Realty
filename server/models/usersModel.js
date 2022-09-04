@@ -25,6 +25,15 @@ const endUser = new Schema({
 
 const agent = new Schema({
     role: { type: String, required: [true, "role is required"], default: "Agent" },
+    profile_picture: { type: String },
+        description: { type: String },
+        contact: {
+            linkedln: { type: String },
+            facebook: { type: String },
+            instagram: { type: String },
+            twitter: { type: String },
+            phone: { type: String },
+        }
 });
 
 const admin = new Schema({
@@ -88,20 +97,12 @@ Users.forEach(function (userSchema) {
 
 })
 
-const Ticketer = Base.discriminator("Ticketer", ticketer),
-    SuperAdmin = mongoose.model("SuperAdmin", superAdmin),
-    Staff = Base.discriminator("Staff", staff),
-    Founder = Base.discriminator("Founder", founder),
+const Agent = Base.discriminator("Agent", agent)
     EndUser = Base.discriminator("EndUser", endUser),
-    BoardDirector = Base.discriminator("BoardDirector", boardDirector),
-    BoatOperator = Base.discriminator("BoatOperator", boatOperator);
+    Admin = Base.discriminator("Admin", admin)
 
 module.exports = {
-    Ticketer,
-    SuperAdmin,
-    Staff,
-    Founder,
+    Agent,
     EndUser,
-    BoardDirector,
-    BoatOperator
+    Admin
 };
