@@ -13,15 +13,14 @@ const connectDatabase = require("./db/connectDB");
 const userRoute = require("./routes/endUserRoute"),
   agentRoute = require("./routes/agentRoute"),
   adminRoute = require("./routes/adminRoute"),
-  authRoute = require("./routes/authRoute"),
-  { verifyAccessToken } = require("./middleware/accessToken");
+  authRoute = require("./routes/authRoute");
 
 // Middlewares
 app.use(morgan("dev"))
 app.use(express.json())
 app.use('/api/auth', authRoute)
 app.use('/api/auth/user', userRoute)
-app.use("/api/agent/", agentRoute);
+app.use("/api/auth/agent/", agentRoute);
 app.use('/api/auth/admin', adminRoute)
 app.use("/api/secure/", (req, res, next) => { verifyAccessToken(req, res, next) });
 

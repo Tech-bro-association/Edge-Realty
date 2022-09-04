@@ -10,7 +10,7 @@ class EmailMsg {
     userAccountVerification () {
         return {
             email: this.email,
-            title: "Boayant - New Account Verification",
+            title: "Edge-Realty - New Account Verification",
             message: `
                 Hi ${_.camelCase(this.name)},
                 Your one time verification code is ${this.token},
@@ -22,7 +22,7 @@ class EmailMsg {
     superAdminAccVerification() {
         return {
             email: this.email,
-            title: "Boayant - New Super Admin Account verification",
+            title: "Edge-Realty - New Admin Account verification",
             message: `
                 Hi ${_.camelCase(this.name)},
 
@@ -36,7 +36,7 @@ class EmailMsg {
     passwordReset () {
         return {
             email: this.email,
-            title: "Boayant - Account password reset confirmation",
+            title: "Edge-Realty - Account password reset confirmation",
             message: `
                 Hi ${_.camelCase(this.name)},
                 You requested for a password reset.
