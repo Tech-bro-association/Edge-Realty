@@ -38,7 +38,6 @@ const authAdmin = asyncWrapper(async (req, res, next) => {
 
   if (!currAdmin) { throw new UnauthorizedError("Unauthorized access") }
 
-  console.log('Authorized')
   next()
 })
 
@@ -52,23 +51,27 @@ const authAgent = asyncWrapper(async (req, res, next) => {
 
   if (!currAgent) { throw new UnauthorizedError("Unauthorized access") }
 
-  console.log('Authorized')
   next()
 })
 
-const authEndUser = asyncWrapper(async (req, res, next) => {
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer')) { throw new UnauthorizedError('Authentication required') }
+const authEndUser = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer')) { throw new UnauthorizedError('Authentication required') }
+  
+    const jwtToken = authHeader.split(' ')[1]
+    const payload = decodeJWT(jwtToken)
+    const currUser = await EndUser.findOne({ _id: payload._id });
+  
+    if (!currUser) { throw new UnauthorizedError("Unauthorized access") }
+  
+    next()
+  } catch (error) {
+    throw error
+  }
 
-  const jwtToken = authHeader.split(' ')[1]
-  const payload = decodeJWT(jwtToken)
-  const currUser = await EndUser.findOne({ _id: payload._id });
-
-  if (!currUser) { throw new UnauthorizedError("Unauthorized access") }
-
-  console.log('Authorized')
-  return next()
-})
+  // return next()
+}
 
 module.exports = {
   verifyToken,
