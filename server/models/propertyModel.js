@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const propertySchema = new Schema({
-    agent_email_fkey: { type: String },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'Agent'
+    },
     name: { type: String },
     address: { type: String },
     city: { type: String },
