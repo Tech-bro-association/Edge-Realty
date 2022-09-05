@@ -28,22 +28,51 @@ const verifyToken = (req, res, next) => {
   return next();
 };
 
-const authenticateRequest = asyncWrapper(async (req, res, next) => {
+const authAdmin = asyncWrapper(async (req, res, next) => {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer')) { throw new UnauthorizedError('Authentication required') }
 
   const jwtToken = authHeader.split(' ')[1]
   const payload = decodeJWT(jwtToken)
-  const User = users[payload.role],
-    currUser = await User.findOne({ _id: payload._id });
+  const currAdmin = await Admin.findOne({ _id: payload._id });
 
-  if (!currUser) { throw new UnauthorizedError("Unauthorized access") }
+  if (!currAdmin) { throw new UnauthorizedError("Unauthorized access") }
 
   console.log('Authorized')
   next()
 })
 
+const authAgent = asyncWrapper(async (req, res, next) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer')) { throw new UnauthorizedError('Authentication required') }
+
+  const jwtToken = authHeader.split(' ')[1]
+  const payload = decodeJWT(jwtToken)
+  const currAgent = await Agent.findOne({ _id: payload._id });
+
+  if (!currAgent) { throw new UnauthorizedError("Unauthorized access") }
+
+  console.log('Authorized')
+  next()
+})
+
+const authEndUser = asyncWrapper(async (req, res, next) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer')) { throw new UnauthorizedError('Authentication required') }
+
+  const jwtToken = authHeader.split(' ')[1]
+  const payload = decodeJWT(jwtToken)
+  const currUser = await EndUser.findOne({ _id: payload._id });
+
+  if (!currUser) { throw new UnauthorizedError("Unauthorized access") }
+
+  console.log('Authorized')
+  return next()
+})
+
 module.exports = {
   verifyToken,
-  authenticateRequest
+  authAdmin,
+  authAgent,
+  authEndUser
 }
