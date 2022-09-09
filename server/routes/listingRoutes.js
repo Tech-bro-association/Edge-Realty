@@ -8,10 +8,10 @@ const { searchListings, addNewListing,
 
 // router.patch("/updatedata", agent.updateAgentData)
 // router.get("/find", agent.getAllAgents)
-router.post("/listing/add", addNewListing)
-router.delete("/listing/remove", removeListing)
-router.get("/listing/find", searchListings)
-router.patch("/listing/update", updateListing)
+router.post("/add", addNewListing)
+router.delete("/remove", removeListing)
+router.get("/find", searchListings)
+router.patch("/update", updateListing)
 // router.post("/appointment/book", agent.bookAppointment)
 
 module.exports = router;

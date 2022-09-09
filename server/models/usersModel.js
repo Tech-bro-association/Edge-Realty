@@ -97,7 +97,7 @@ Users.forEach(function (userSchema) {
 
 })
 
-const Agent = Base.discriminator("Agent", agent)
+const Agent = Base.discriminator("Agent", agent),
     EndUser = Base.discriminator("EndUser", endUser),
     Admin = Base.discriminator("Admin", admin)
 

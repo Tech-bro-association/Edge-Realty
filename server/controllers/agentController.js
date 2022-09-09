@@ -12,18 +12,6 @@
 //     authenticateClientLogin(res, "agent", req.body)
 // }
 
-// // Add new Agent to db
-// async function addNewAgent(req, res) {
-//     let data = req.body;
-//     let agent = new Agent({
-//         name: data.name,
-//         email: data.email,
-//         Agent_type: data.signup_type || "regular",
-//         address: data.address,
-//     });
-
-//     addNewClient(res, "agent", data, agent)
-// };
 
 // // Update Agent data
 // async function updateAgentData(req, res) {
